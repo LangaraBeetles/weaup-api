@@ -1,15 +1,17 @@
 
-import { MongoClient } from 'mongodb';
+// functions/postData.js
+
+const { MongoClient } = require('mongodb');
 
 exports.handler = async function(event, context) {
   const client = new MongoClient(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
   
   try {
     await client.connect();
-    const db = client.db('test');
-    const collection = db.collection('beetlesTest');
+    const db = client.db('mydatabase');
+    const collection = db.collection('mycollection');
 
-    const data = {user: "beetles"};
+    const data = JSON.parse(event.body);
     await collection.insertOne(data);
 
     return {
@@ -25,3 +27,4 @@ exports.handler = async function(event, context) {
     await client.close();
   }
 };
+
