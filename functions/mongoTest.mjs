@@ -1,5 +1,5 @@
 import { MongoClient } from 'mongodb';
-require('dotenv').config();
+// require('dotenv').config();
 
 export default async (req, context) => {
     const uri = process.env.DB_CONNECTION;
