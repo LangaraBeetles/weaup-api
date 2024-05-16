@@ -1,5 +1,4 @@
 import { MongoClient } from 'mongodb';
-// require('dotenv').config();
 
 export default async (req, context) => {
     const uri = process.env.DB_CONNECTION;
@@ -12,7 +11,6 @@ export default async (req, context) => {
         const collection = database.collection('beetlesTest');
 
         const documents = await collection.find().toArray();
-        console.log(documents[0]);
 
         return new Response("user:" + documents[0].user + "\nresult:" + documents[0].resutl);
     } finally {

@@ -20,7 +20,7 @@ http://localhost:8888/api/hello
 
 ## Test endpoint with Db connection
 
-http://localhost:8888/api/mongoTest
+http://localhost:8888/api/mongo-test
 
 
 ## Build
