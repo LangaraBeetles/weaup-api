@@ -4,7 +4,8 @@
 ## Installation
 
 ```bash
-npm run install
+npm install netlify-cli -g
+npm install
 ```
 
 ## Development
