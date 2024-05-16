@@ -10,6 +10,9 @@
   to = "/.netlify/functions/:splat"
   
 [[headers]]
-    for = "/*"
-    [headers.values]
-        Access-Control-Allow-Origin = "*"
+  for = "/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+
+[functions]
+  directory = "functions"
