@@ -27,7 +27,7 @@ http://localhost:8888/api/mongo-test
 ## Build
 
 ```bash
-netlify dev
+npm run build
 
 ```
 
