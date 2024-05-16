@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/LangaraBeetles/beetles-backend#readme",
   "devDependencies": {
-    "@11ty/eleventy": "^0.11.0"
+    "@11ty/eleventy": "^0.11.1"
   },
   "dependencies": {
     "netlify-cli": "^16.3.2"
