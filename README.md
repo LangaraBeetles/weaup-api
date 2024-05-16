@@ -18,6 +18,11 @@ netlify dev
 
 http://localhost:8888/api/hello
 
+## Test endpoint with Db connection
+
+http://localhost:8888/api/mongoTest
+
+
 ## Build
 
 ```bash
