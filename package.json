@@ -4,15 +4,24 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon app.js"
+    "dev": "eleventy --serve",
+    "build": "eleventy"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LangaraBeetles/beetles-backend.git"
+  },
+  "keywords": [],
   "author": "",
   "license": "ISC",
+  "bugs": {
+    "url": "git+https://github.com/LangaraBeetles/beetles-backend.git"
+  },
+  "homepage": "https://github.com/LangaraBeetles/beetles-backend#readme",
+  "devDependencies": {
+    "@11ty/eleventy": "^0.11.0"
+  },
   "dependencies": {
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2",
-    "mongoose": "^8.3.4",
-    "nodemon": "^3.1.0"
+    "netlify-cli": "^16.3.2"
   }
 }
