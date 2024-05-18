@@ -1,0 +1,16 @@
+[build]
+  command = "npm run build"
+  publish = "_site"
+  functions = "functions"
+
+[[redirects]]
+  force = true
+  from = "/api/*"
+  status = 200
+  to = "/.netlify/functions/:splat"
+  
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+
