@@ -1,19 +1,30 @@
-import { MongoClient } from 'mongodb';
+import clientPromise from "../db.mjs";
 
 export default async (req, context) => {
-    const uri = process.env.DB_CONNECTION;
-    const client = new MongoClient(uri);
-    await client.connect();
 
     try {
         
+        const client = await clientPromise;
+
         const database = client.db('test');
         const collection = database.collection('beetlesTest');
 
         const documents = await collection.find().toArray();
 
-        return new Response("user:" + documents[0].user + "\nresult:" + documents[0].resutl);
-    } finally {
-        await client.close();
+        if (documents.length === 0) {
+            return {
+                statusCode: 404,
+                body: JSON.stringify({ error: 'No documents found.' }),
+            };
+        }
+
+        return new Response(JSON.stringify(documents));
+        
+    } catch (error) {
+        console.error('Database query failed', error);
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ error: 'Database query failed' }),
+        };
     }
 };
