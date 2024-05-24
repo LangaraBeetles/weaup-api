@@ -1,7 +1,7 @@
 import connect from "../db.mjs";
 
 export default async (req, context) => {
-  await connect(
+  return await connect(
     async (client) => {
       const database = client.db("test");
       const collection = database.collection("beetlesTest");
