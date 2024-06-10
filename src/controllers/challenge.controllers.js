@@ -15,4 +15,14 @@ export const createChallenge = async (req, res) => {
   }
 };
 
-export default { createChallenge };
+//Get all challenges
+export const getChallenges = async (req, res) => {
+  try {
+    const data = await Challenge.find();
+    res.status(200).json({ data, error: null });
+  } catch (error) {
+    res.status(500).json({ data: null, error: JSON.stringify(error) });
+  }
+};
+
+export default { createChallenge, getChallenges };

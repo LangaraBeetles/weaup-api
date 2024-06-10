@@ -7,4 +7,7 @@ const router = express.Router();
 // POST /api/v1/challenges
 router.post(`${paths.challenge}`, controllers.createChallenge);
 
+// GET /api/v1/challenges
+router.get(`${paths.challenge}`, controllers.getChallenges);
+
 export default router;
