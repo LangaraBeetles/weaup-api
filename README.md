@@ -1,5 +1,4 @@
-# Beetles API
-
+# WeaUp API
 
 ## Installation
 
