@@ -1,4 +1,4 @@
-import Challenge from "../models/challenge.js";
+import Challenge from "../models/Challenge.js";
 
 // Create challenge
 export const createChallenge = async (req, res) => {
@@ -9,7 +9,6 @@ export const createChallenge = async (req, res) => {
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
-}
+};
 
-
-export default challengeController;
+export default { createChallenge };
