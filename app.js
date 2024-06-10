@@ -1,8 +1,8 @@
-const express = require('express');
+const express = require("express");
 const app = express();
 
 try {
-  const connection = require("./db/connection.js");
+  const connection = require("./models/db");
 
   connection.once("open", () => {
     const server = app.listen(process.env.PORT || 3000, () => {
