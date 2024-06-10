@@ -3,11 +3,15 @@ import Challenge from "../models/Challenge.js";
 // Create challenge
 export const createChallenge = async (req, res) => {
   try {
-    const challenge = new Challenge(req.body);
-    await challenge.save();
-    res.status(201).json(challenge);
+    const data = new Challenge(req.body);
+    await data.save();
+    const response = {
+      _id: data._id,
+      url: `${req.protocol}://${req.get("host")}${req.originalUrl}/challenge/invite/${data._id}`,
+    };
+    res.status(201).json({ data: response, error: null });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(500).json({ data: null, error: JSON.stringify(error) });
   }
 };
 
