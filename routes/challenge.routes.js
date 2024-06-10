@@ -1,9 +1,10 @@
+import express from "express";
 import challengeController from "../controllers/challenge.controllers";
 import paths from "../shared/paths";
 
-const challengeRouter = express.Router();
+const router = express.Router();
 
 // POST /api/v1/challenges
-challengeRouter.post(paths.challenge, challengeController.createChallenge);
+router.post(paths.challenge, challengeController.createChallenge);
 
-export default challengeRouter;
+export default router;
