@@ -1,7 +1,7 @@
 import Challenge from "../models/challenge.js";
 
 // Create challenge
-async function createChallenge(req, res) {
+export const createChallenge = async (req, res) => {
   try {
     const challenge = new Challenge(req.body);
     await challenge.save();
@@ -11,8 +11,5 @@ async function createChallenge(req, res) {
   }
 }
 
-const challengeController = {
-  createChallenge,
-};
 
 export default challengeController;

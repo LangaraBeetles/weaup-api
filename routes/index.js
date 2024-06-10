@@ -1,8 +1,8 @@
 import express from "express";
-import challengeRouter from "./challenge.routes";
+import challengeRoutes from "./challenge.routes";
 
 const router = express.Router({ mergeParams: true });
 
-router.use(challengeRouter);
+router.use(challengeRoutes);
 
 export default router;
