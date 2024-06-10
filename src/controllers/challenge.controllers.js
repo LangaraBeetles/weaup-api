@@ -15,7 +15,7 @@ export const createChallenge = async (req, res) => {
   }
 };
 
-//Get all challenges
+// Get all challenges
 export const getChallenges = async (req, res) => {
   try {
     const data = await Challenge.find();
@@ -25,4 +25,15 @@ export const getChallenges = async (req, res) => {
   }
 };
 
-export default { createChallenge, getChallenges };
+// Get challenge by id
+export const getChallengeById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const data = await Challenge.findById(id);
+    res.status(200).json({ data, error: null });
+  } catch (error) {
+    res.status(500).json({ data: null, error: JSON.stringify(error) });
+  }
+};
+
+export default { createChallenge, getChallenges, getChallengeById };
