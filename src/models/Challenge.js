@@ -1,5 +1,12 @@
 import { Schema, model } from "mongoose";
 
+const Member = new Schema({
+  user_id: { type: String, required: true },
+  joined_at: { type: Date, default: Date.now(), required: false },
+  points: { type: Number, default: 0, required: true },
+  left_at: { type: Date, default: null, required: false },
+});
+
 const schema = new Schema({
   creator_id: { type: String, required: true },
   name: { type: String, required: true },
@@ -13,6 +20,7 @@ const schema = new Schema({
     default: "in_progress",
     required: false,
   },
+  members: [Member],
 });
 
 export default model("Challenge", schema);
