@@ -41,12 +41,12 @@ export const getChallengeById = async (req, res) => {
 export const addMember = async (req, res) => {
   try {
     const { id } = req.params;
-    const { user_id, joined_at, points, left_at } = req.body;
+    const { user_id } = req.body;
     const challenge = await Challenge.findById(id);
     if (!challenge) {
       return res.status(404).json({ data: null, error: "Challenge not found" });
     }
-    challenge.members.push({ user_id, joined_at, points, left_at });
+    challenge.members.push({ user_id });
     await challenge.save();
     res.status(200).json({ data: challenge, error: null });
   } catch (error) {
