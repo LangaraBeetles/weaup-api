@@ -8,10 +8,11 @@ const createUser = async (req, res) => {
 
     const newUser = new User({
       name: req.body.name,
-      device_id: req.body.device_id,
+      preferred_mode: req.body.preferred_mode,
+      daily_goal: req.body.daily_goal,
       // level_id: level._id, // TODO: Uncomment when Level collection is populated
       is_setup_complete: req.body.is_setup_complete,
-      preferred_mode: req.body.preferred_mode,
+      device_id: req.body.device_id,
     });
 
     const response = await newUser.save();
