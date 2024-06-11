@@ -10,4 +10,7 @@ router.post(`${paths.user}`, controllers.createUser);
 //PATCH /api/v1/user/:_id
 router.patch(`${paths.user}/:id`, controllers.updateUser);
 
+//GET /api/v1/user/:_id
+router.get(`${paths.user}/:id`, controllers.getUserById);
+
 export default router;

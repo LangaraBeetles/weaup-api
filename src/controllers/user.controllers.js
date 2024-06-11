@@ -43,7 +43,24 @@ const updateUser = async (req, res) => {
     res.status(500).json({ data: null, error: JSON.stringify(error) });
   }
 };
+
+//Get User
+const getUserById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const response = await User.findById(id);
+
+    if (!response) {
+      return res.status(404).json({ data: null, error: "User not found" });
+    }
+    res.status(200).json({ data: response, error: null });
+  } catch (error) {
+    res.status(500).json({ data: null, error: JSON.stringify(error) });
+  }
+};
+
 export default {
   createUser,
   updateUser,
+  getUserById,
 };
