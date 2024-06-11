@@ -44,7 +44,7 @@ const updateUser = async (req, res) => {
   }
 };
 
-//Get User
+//Get User by id
 const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -59,8 +59,20 @@ const getUserById = async (req, res) => {
   }
 };
 
+//Get Users
+const getUsers = async (req, res) => {
+  try {
+    const response = await User.find();
+
+    res.status(200).json({ data: response, error: null });
+  } catch (error) {
+    res.status(500).json({ data: null, error: JSON.stringify(error) });
+  }
+};
+
 export default {
   createUser,
   updateUser,
   getUserById,
+  getUsers,
 };

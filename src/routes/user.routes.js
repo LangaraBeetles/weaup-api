@@ -13,4 +13,7 @@ router.patch(`${paths.user}/:id`, controllers.updateUser);
 //GET /api/v1/user/:_id
 router.get(`${paths.user}/:id`, controllers.getUserById);
 
+//GET /api/v1/users
+router.get(`${paths.user}`, controllers.getUsers);
+
 export default router;
