@@ -13,4 +13,13 @@ router.get(`${paths.challenge}`, controllers.getChallenges);
 // GET /api/v1/challenges/:id
 router.get(`${paths.challenge}/:id`, controllers.getChallengeById);
 
+// POST /api/v1/challenges/:id/members
+router.post(`${paths.challenge}/:id/members`, controllers.addMember);
+
+// DELETE /api/v1/challenges/:id/members/:userId
+router.delete(
+  `${paths.challenge}/:id/members/:userId`,
+  controllers.removeMember,
+);
+
 export default router;
