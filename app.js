@@ -6,7 +6,7 @@ import router from "./src/routes/index.js";
 import connection from "./src/models/db.js";
 
 const app = express();
-const port = Number(process.env.PORT) || 8000;
+const port = Number(process.env.PORT) || 3000;
 
 // DB connection
 try {
