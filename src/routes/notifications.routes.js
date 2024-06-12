@@ -10,9 +10,9 @@ router.get(
   controllers.getNotificationsByUserId,
 );
 
-// GET: /api/v1/notifications/user/:user_id/:notification_id
+// GET: /api/v1/notifications/:notification_id/user/:user_id
 router.get(
-  `${paths.notifications.base}/user/:user_id/:notification_id`,
+  `${paths.notifications.base}/:notification_id/user/:user_id`,
   controllers.getNotificationByUserAndId,
 );
 
