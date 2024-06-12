@@ -7,10 +7,10 @@ const router = express.Router();
 //POST /api/v1/user/
 router.post(`${paths.user}`, controllers.createUser);
 
-//PATCH /api/v1/user/:_id
+//PATCH /api/v1/user/:id
 router.patch(`${paths.user}/:id`, controllers.updateUser);
 
-//GET /api/v1/user/:_id
+//GET /api/v1/user/:id
 router.get(`${paths.user}/:id`, controllers.getUserById);
 
 //GET /api/v1/users
