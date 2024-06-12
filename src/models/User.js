@@ -13,7 +13,7 @@ const schema = new Schema({
   is_setup_complete: { type: Boolean, default: false, required: true },
   xp: { type: Number, min: 0, default: 0, required: true },
   hp: { type: Number, min: 0, default: 100, required: true },
-  device_id: { type: String, unique: true, required: true },
+  device_id: { type: String, default: null, required: false },
 });
 
 export default model("User", schema);
