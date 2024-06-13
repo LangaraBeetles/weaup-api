@@ -6,13 +6,7 @@ export const getNotificationsByUserId = async (req, res) => {
     const userId = req.params.user_id;
     const response = await Notifications.find({ user_id: userId });
 
-    if (!response || response.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No notifications found for this user" });
-    }
-
-    res.status(200).json({ data: response, error: null });
+    res.status(200).json({ data: response ?? [], error: null });
   } catch (error) {
     res.status(500).json({ data: null, error: error });
   }
@@ -29,9 +23,9 @@ export const getNotificationByUserAndId = async (req, res) => {
     });
 
     if (!response) {
-      return res.status(404).json({
-        message: "Notification not found for this user and notification ID",
-      });
+      return res
+        .status(404)
+        .json({ data: response, error: "Notification not found" });
     }
 
     res.status(200).json({ data: response, error: null });
