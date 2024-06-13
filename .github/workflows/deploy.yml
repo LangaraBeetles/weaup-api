@@ -21,5 +21,5 @@ jobs:
     - name: Run deployment script on EC2
       run: |
         ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-          cd /projects && ./deploy.sh
+          cd projects && ./deploy.sh
         EOF
