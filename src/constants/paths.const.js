@@ -5,6 +5,7 @@ const paths = {
   },
   daily_summary: "/daily_summary",
   challenge: "/challenges",
+  user: "/user",
 };
 
 export default paths;
