@@ -76,10 +76,35 @@ export const removeMember = async (req, res) => {
   }
 };
 
+// Join challenge
+export const joinChallenge = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { user_id, response } = req.body;
+    const challenge = await Challenge.findById(id);
+
+    if (!challenge) {
+      return res.status(404).json({ data: null, error: "Challenge not found" });
+    }
+
+    if (response === "accept") {
+      // TODO: send notification to the creator
+      challenge.members.push({ user_id });
+      await challenge.save();
+      res.status(201).json({ data: challenge, error: null });
+    } else {
+      res.status(200).json({ data: null, error: "Declined" });
+    }
+  } catch (error) {
+    res.status(500).json({ data: null, error: JSON.stringify(error) });
+  }
+};
+
 export default {
   createChallenge,
   getChallenges,
   getChallengeById,
   addMember,
   removeMember,
+  joinChallenge,
 };
