@@ -18,8 +18,25 @@ export const createChallenge = async (req, res) => {
 // Get all challenges
 export const getChallenges = async (req, res) => {
   try {
-    const data = await Challenge.find();
-    // TODO: Filter out challenges that the creater has left
+    const { user_id, status } = req.query;
+    let data = await Challenge.find();
+
+    // Filter out challenges that the creater has left if user_id is provided
+    if (user_id) {
+      data = data.filter(
+        (challenge) =>
+          challenge.creator_id === user_id &&
+          challenge.members.find(
+            (member) => member.user_id === user_id && member.left_at === null,
+          ),
+      );
+    }
+
+    // Filter out challenges that are not in the provided status
+    if (status) {
+      data = data.filter((challenge) => challenge.status === status);
+    }
+
     res.status(200).json({ data, error: null });
   } catch (error) {
     res.status(500).json({ data: null, error: JSON.stringify(error) });
