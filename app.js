@@ -30,5 +30,5 @@ app.use("/api/v1", router);
 router.get("/test", (req, res) => {
   res.type("text/plain");
   res.status(200);
-  res.send("Working! Testing Automatic Deploy 7");
+  res.send("Working!");
 });
