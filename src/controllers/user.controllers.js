@@ -1,5 +1,5 @@
-import User from "../models/user.js";
-//import Level from "../models/level.js"; // TODO: Uncomment when Level collection is populated
+import User from "../models/User.js";
+//import Level from "../models/Level.js"; // TODO: Uncomment when Level collection is populated
 
 //Create User
 const createUser = async (req, res) => {
