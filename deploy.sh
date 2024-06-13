@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Define your app directory and log file
-APP_DIR="/projects/weaup-api"
-LOG_FILE="/projects/weaup-api/logfile.log"
+APP_DIR="/"
+LOG_FILE="/logfile.log"
 
 # Function to log messages with timestamp
 log() {
