@@ -39,5 +39,5 @@ app.use("/api/v1", checkJwt, router);
 router.get("/test", (req, res) => {
   res.type("text/plain");
   res.status(200);
-  res.send("Working!");
+  res.send("Working! Demo Auto Deploy");
 });
