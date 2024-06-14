@@ -11,7 +11,7 @@ export const getAuthToken = async (req, res) => {
       {
         client_id: process.env.CLIENT_ID,
         client_secret: process.env.CLIENT_SECRET,
-        audience: process.env.AUDIENCE,
+        audience: process.env.AUTH0_AUDIENCE,
         grant_type: "client_credentials",
       },
       {
