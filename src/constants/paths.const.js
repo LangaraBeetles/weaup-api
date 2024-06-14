@@ -8,6 +8,7 @@ const paths = {
   user: "/user",
   notifications: {
     base: "/notifications",
+  }
 };
 
 export default paths;
