@@ -1,9 +1,14 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
+import dotenv from "dotenv";
 
 import router from "./src/routes/index.js";
 import connection from "./src/models/db.js";
+import checkJwt from "./src/middleware/auth.middleware.js";
+import {getAuthToken} from './src/controllers/auth.controllers.js'
+
+dotenv.config();
 
 const app = express();
 const port = Number(process.env.PORT) || 3000;
@@ -25,7 +30,11 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use("/api/v1", router);
+// Public routes which don't require a TOKEN
+app.post("/api/v1/auth", getAuthToken)
+
+// Routes required to have a valid TOKEN
+app.use("/api/v1", checkJwt, router);
 
 router.get("/test", (req, res) => {
   res.type("text/plain");
