@@ -93,7 +93,7 @@ export const joinChallenge = async (req, res) => {
       await challenge.save();
       res.status(201).json({ data: challenge, error: null });
     } else {
-      res.status(200).json({ data: null, error: "Declined" });
+      res.status(204).json({ data: null, error: null });
     }
   } catch (error) {
     res.status(500).json({ data: null, error: JSON.stringify(error) });
