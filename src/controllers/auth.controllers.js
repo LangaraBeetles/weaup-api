@@ -7,7 +7,7 @@ dotenv.config();
 export const getAuthToken = async (req, res) => {
   try {
     const response = await axios.post(
-      "https://dev-gcim3ai20yw28qus.us.auth0.com/oauth/token",
+      process.env.TOKEN_URI,
       {
         client_id: process.env.CLIENT_ID,
         client_secret: process.env.CLIENT_SECRET,

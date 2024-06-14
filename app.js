@@ -31,7 +31,7 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Public routes which don't require a TOKEN
-app.use("/api/v1/auth", getAuthToken)
+app.post("/api/v1/auth", getAuthToken)
 
 // Routes required to have a valid TOKEN
 app.use("/api/v1", checkJwt, router);
