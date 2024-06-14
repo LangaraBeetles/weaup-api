@@ -37,23 +37,6 @@ export const getChallengeById = async (req, res) => {
   }
 };
 
-// Add a member to a challenge
-export const addMember = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { user_id } = req.body;
-    const challenge = await Challenge.findById(id);
-    if (!challenge) {
-      return res.status(404).json({ data: null, error: "Challenge not found" });
-    }
-    challenge.members.push({ user_id });
-    await challenge.save();
-    res.status(200).json({ data: challenge, error: null });
-  } catch (error) {
-    res.status(500).json({ data: null, error: JSON.stringify(error) });
-  }
-};
-
 // Remove member from challenge
 export const removeMember = async (req, res) => {
   try {
@@ -104,7 +87,6 @@ export default {
   createChallenge,
   getChallenges,
   getChallengeById,
-  addMember,
   removeMember,
   joinChallenge,
 };
