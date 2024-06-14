@@ -34,7 +34,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.post("/api/v1/auth", getAuthToken)
 
 // Routes required to have a valid TOKEN
-app.use("/api/v1", checkJwt, router);
+// app.use("/api/v1", checkJwt, router);
+app.use("/api/v1", router); //TODO uncomment above line and remove this line
 
 router.get("/test", (req, res) => {
   res.type("text/plain");
