@@ -65,9 +65,31 @@ export const joinChallenge = async (req, res) => {
     const { id } = req.params;
     const { user_id, response } = req.body;
     const challenge = await Challenge.findById(id);
+    const member = challenge.members.find(
+      (member) => member.user_id === user_id,
+    );
 
     if (!challenge) {
       return res.status(404).json({ data: null, error: "Challenge not found" });
+    }
+
+    if (member && member.left_at === null) {
+      return res
+        .status(400)
+        .json({ data: null, error: "User already in challenge" });
+    }
+
+    if (member && member.left_at !== null) {
+      member.left_at = null;
+      await challenge.save();
+      return res.status(201).json({ data: challenge, error: null });
+    }
+
+    if (!challenge.status === "in_progress") {
+      return res.status(400).json({
+        data: null,
+        error: "Can't join challenge that has finished or has been deleted",
+      });
     }
 
     if (response === "accept") {
