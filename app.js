@@ -5,8 +5,8 @@ import dotenv from "dotenv";
 
 import router from "./src/routes/index.js";
 import connection from "./src/models/db.js";
-import checkJwt from "./src/middleware/auth.middleware.js";
-import {getAuthToken} from './src/controllers/auth.controllers.js'
+import checkGoogleAccessToken from "./src/middleware/auth.middleware.js";
+import { getAuthToken } from './src/controllers/auth.controllers.js'
 
 dotenv.config();
 
@@ -34,8 +34,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.post("/api/v1/auth", getAuthToken)
 
 // Routes required to have a valid TOKEN
-// app.use("/api/v1", checkJwt, router);
-app.use("/api/v1", router); //TODO uncomment above line and remove this line
+app.use("/api/v1", checkGoogleAccessToken, router); //TODO For development, comment this line
+// app.use("/api/v1", router); //TODO For development, uncomment this line
 
 router.get("/test", (req, res) => {
   res.type("text/plain");
