@@ -45,12 +45,12 @@ const googleAuthCallback = async (req, res) => {
     const { email, name, id } = userInfo;
 
     // Check if user already exists
-    let user = await User.findOne({ _id: id });
+    let user = await User.findOne({ providerId: id });
     if (!user) {
       user = new User({
-        _id: id, // Use the ID from the Google token
+        providerId: id, // Use the ID from the Google token
         name: name,
-        mail: email,
+        email: email,
         preferred_mode: "phone", // TODO: update with the actual user preferences if available
         daily_goal: 50,
         is_setup_complete: false,
@@ -61,24 +61,10 @@ const googleAuthCallback = async (req, res) => {
       await user.save();
     }
 
-    // Call your API to get an access token
-    const authResponse = await axios.post(
-      `http://localhost:${process.env.PORT || 3000}/api/v1/auth/api`,
-    );
-
-    const accessToken = authResponse.data.token;
-
-    // The Access Token is stored in the session so we can cal it enywhere in the app and do the api calls.
-    req.session.accessToken = accessToken;
-
-    res
-      .status(200)
-      .json(
-        `${name} logged in successfully! Your access token is: ${accessToken}`,
-      );
+    res.status(200).json(tokens);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error.message, data: null });
   }
 };
 
-export { googleAuthRedirect, googleAuthCallback };
+export default { googleAuthRedirect, googleAuthCallback };

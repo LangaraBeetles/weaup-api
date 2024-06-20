@@ -40,4 +40,4 @@ const tokenNeedsRenewal = (credentials) => {
   return now + 300 > expiry;
 };
 
-export { getAuthToken };
+export default { getAuthToken };
