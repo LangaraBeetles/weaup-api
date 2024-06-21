@@ -1,11 +1,9 @@
 import express from "express";
 
-import accesAuthRoutes from "./accesAuth.routes.js";
-import idAuthRoutes from "./idAuth.routes.js";
+import google from "./google_auth.routes.js";
 
 const router = express.Router({ mergeParams: true });
 
-router.use(accesAuthRoutes);
-router.use(idAuthRoutes);
+router.use(google);
 
 export default router;

@@ -33,7 +33,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Routes required to have a valid TOKEN
 app.use("/api/v1", publicRouter);
 
-process.env.DEV_MODE === "true" ? app.use("/api/v1", router) : app.use("/api/v1", checkGoogleAccessToken, router);
+app.use("/api/v1", checkGoogleAccessToken, router);
 
 router.get("/test", (req, res) => {
   res.type("text/plain");

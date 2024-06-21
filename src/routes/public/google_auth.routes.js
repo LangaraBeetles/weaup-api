@@ -1,6 +1,6 @@
 import express from "express";
 import paths from "../../constants/paths.const.js";
-import controllers from "../../controllers/googleAuth.controllers.js";
+import controllers from "../../controllers/google_auth.controllers.js";
 
 const router = express.Router();
 
