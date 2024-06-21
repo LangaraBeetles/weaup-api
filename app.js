@@ -4,9 +4,9 @@ import cors from "cors";
 import dotenv from "dotenv";
 
 import router from "./src/routes/index.js";
+import publicRouter from "./src/routes/public/index.js";
 import connection from "./src/models/db.js";
-import checkJwt from "./src/middleware/auth.middleware.js";
-import {getAuthToken} from './src/controllers/auth.controllers.js'
+import checkGoogleAccessToken from "./src/middleware/auth.middleware.js";
 
 dotenv.config();
 
@@ -30,15 +30,7 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Public routes which don't require a TOKEN
-app.post("/api/v1/auth", getAuthToken)
-
 // Routes required to have a valid TOKEN
-// app.use("/api/v1", checkJwt, router);
-app.use("/api/v1", router); //TODO uncomment above line and remove this line
+app.use("/api/v1", publicRouter);
 
-router.get("/test", (req, res) => {
-  res.type("text/plain");
-  res.status(200);
-  res.send("Working! Demo Auto Deploy");
-});
+app.use("/api/v1", checkGoogleAccessToken, router);

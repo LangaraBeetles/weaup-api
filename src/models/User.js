@@ -1,7 +1,9 @@
 import { Schema, model } from "mongoose";
 
 const schema = new Schema({
+  providerId: { type: String, required: false },
   name: { type: String, default: null, required: false },
+  email: { type: String, required: true, unique: false },
   preferred_mode: {
     type: String,
     enum: ["phone", "earbuds"],

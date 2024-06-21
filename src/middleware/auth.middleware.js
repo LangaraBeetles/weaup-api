@@ -1,29 +1,43 @@
-import { expressjwt as jwt } from "express-jwt";
-import jwksRsa from "jwks-rsa";
+import axios from "axios";
 import dotenv from "dotenv";
 
 dotenv.config();
 
-// Auth0 configuration
-const authConfig = {
-  domain: process.env.AUTH0_DOMAIN,
-  audience: process.env.AUTH0_AUDIENCE,
+const checkGoogleAccessToken = async (req, res, next) => {
+  if (process.env.DEV_MODE === "true") {
+    next();
+    return;
+  }
+
+  const authorizationHeader = req.headers["authorization"];
+
+  if (!authorizationHeader) {
+    return res.status(401).json({ data: null, error: "Unauthorized" });
+  }
+
+  const token = authorizationHeader.split(" ")[1];
+
+  try {
+    const uri = process.env.TOKEN_URI;
+
+    const response = await axios.get(uri, {
+      params: {
+        access_token: token,
+      },
+    });
+
+    const payload = response.data;
+
+    if (payload.aud !== process.env.GOOGLE_CLIENT_ID) {
+      throw new Error("Token audience does not match client ID");
+    }
+
+    req.auth = payload;
+
+    next();
+  } catch (error) {
+    res.status(401).json({ data: null, error: error });
+  }
 };
 
-// JWT middleware
-const checkJwt = jwt({
-  // Dynamically provide a signing key
-  secret: jwksRsa.expressJwtSecret({
-    cache: true,
-    rateLimit: true,
-    jwksRequestsPerMinute: 5,
-    jwksUri: `https://${authConfig.domain}/.well-known/jwks.json`,
-  }),
-
-  // Validate the audience and the issuer
-  audience: authConfig.audience,
-  issuer: `https://${authConfig.domain}/`,
-  algorithms: ["RS256"],
-});
-
-export default checkJwt;
+export default checkGoogleAccessToken;
