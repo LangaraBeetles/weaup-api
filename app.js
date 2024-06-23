@@ -33,4 +33,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Routes required to have a valid TOKEN
 app.use("/api/v1", publicRouter);
 
-app.use("/api/v1", checkGoogleAccessToken, router);
+// TODO: uncomment line below to enable auth
+// app.use("/api/v1", checkGoogleAccessToken, router);
+app.use("/api/v1", router);
