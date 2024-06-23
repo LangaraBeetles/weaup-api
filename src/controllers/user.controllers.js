@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import { signObject } from "../shared/auth.js";
 //import Level from "../models/Level.js"; // TODO: Uncomment when Level collection is populated
 
 //Create User
@@ -16,7 +17,10 @@ const createUser = async (req, res) => {
     });
 
     const response = await newUser.save();
-    res.status(201).json({ data: response, error: null });
+    const user = response.toObject();
+    const token = signObject(user);
+
+    res.status(201).json({ data: { ...user, token }, error: null });
   } catch (error) {
     res.status(500).json({ data: null, error: JSON.stringify(error) });
   }

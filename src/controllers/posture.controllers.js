@@ -1,3 +1,4 @@
+import AuthData from "../models/Auth.js";
 import PostureRecord from "../models/PostureRecord.js";
 import PostureSession from "../models/PostureSession.js";
 
@@ -8,7 +9,7 @@ const createRecordObject = ({
   recorded_at,
 }) => {
   return new PostureRecord({
-    user_id, //TODO: get this user_id from the token
+    user_id,
     good_posture: good_posture ?? false,
     session_id: session_id ?? undefined,
     recorded_at: new Date(recorded_at),
@@ -18,10 +19,12 @@ const createRecordObject = ({
 // RECORDS
 export const createPostureRecord = async (req, res) => {
   try {
+    const user = new AuthData(req);
+
     // INSERT MANY
     if (Array.isArray(req?.body)) {
       const records = req.body.map((data) => {
-        return createRecordObject(data);
+        return createRecordObject({ user_id: user._id, ...data });
       });
 
       const data = await PostureRecord.insertMany(records);
@@ -33,7 +36,10 @@ export const createPostureRecord = async (req, res) => {
     }
 
     // INSERT ONE
-    const data = await createRecordObject(req?.body).save();
+    const data = await createRecordObject({
+      user_id: user._id,
+      ...req?.body,
+    }).save();
 
     res.status(201).json({
       data,
@@ -42,15 +48,19 @@ export const createPostureRecord = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       data: null,
-      error: JSON.stringify(error),
+      error: error.messate,
     });
   }
 };
 
 export const getAllRecords = async (req, res) => {
   try {
+    const user = new AuthData(req);
+
     // Optional filters
-    const user_id = req?.query?.user_id;
+    const user_id = req?.query?.user_id ?? user._id;
+    // prefer the user_id coming from the query params over the token (useful for testing), leave this value undefined to get the id from the token (recommended)
+
     const good_posture = req?.query?.good_posture;
     const session_id = req?.query?.session_id;
     const start_date = req?.query?.start_date;
@@ -83,14 +93,19 @@ export const getAllRecords = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       data: null,
-      error,
+      error: error.messate,
     });
   }
 };
 
 export const getRecordById = async (req, res) => {
   try {
-    const data = await PostureRecord.findById(req?.params?.id).exec();
+    const user = new AuthData(req);
+
+    const data = await PostureRecord.findOne({
+      user_id: user._id,
+      _id: req?.params?.id,
+    }).exec();
 
     res.status(200).json({
       data,
@@ -99,7 +114,7 @@ export const getRecordById = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       data: null,
-      error,
+      error: error.messate,
     });
   }
 };
@@ -107,6 +122,8 @@ export const getRecordById = async (req, res) => {
 // SESSIONS
 export const createPostureSession = async (req, res) => {
   try {
+    const user = new AuthData(req);
+
     const records = Array.isArray(req?.body?.records) ? req?.body?.records : [];
 
     if (!records.length) {
@@ -122,7 +139,7 @@ export const createPostureSession = async (req, res) => {
     const totalBad = total - totalGood;
 
     const session = new PostureSession({
-      user_id: req?.body?.user_id,
+      user_id: user._id,
       started_at: new Date(req?.body?.started_at),
       ended_at: new Date(req?.body?.ended_at),
       total_bad: totalBad,
@@ -152,15 +169,18 @@ export const createPostureSession = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       data: null,
-      error: JSON.stringify(error),
+      error: error.messate,
     });
   }
 };
 
 export const getAllSessions = async (req, res) => {
   try {
+    const user = new AuthData(req);
+
     // Optional filters
-    const user_id = req?.query?.user_id;
+    const user_id = req?.query?.user_id ?? user._id;
+    // prefer the user_id coming from the query params over the token (useful for testing), leave this value undefined to get the id from the token (recommended)
 
     const data = await PostureSession.find({
       ...(user_id !== undefined ? { user_id } : {}),
@@ -173,14 +193,19 @@ export const getAllSessions = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       data: null,
-      error,
+      error: error.messate,
     });
   }
 };
 
 export const getSessionById = async (req, res) => {
   try {
-    const data = await PostureSession.findById(req?.params?.id).exec();
+    const user = new AuthData(req);
+
+    const data = await PostureSession.findOne({
+      _id: req?.params?.id,
+      user_id: user._id,
+    }).exec();
 
     res.status(200).json({
       data,
@@ -190,7 +215,7 @@ export const getSessionById = async (req, res) => {
     console.log({ error });
     res.status(500).json({
       data: null,
-      error,
+      error: error.messate,
     });
   }
 };

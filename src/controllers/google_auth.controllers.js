@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import User from "../models/User.js";
 import queryString from "query-string";
 import { getGoogleUser } from "../shared/user.js";
+import { signObject } from "../shared/auth.js";
 
 dotenv.config();
 
@@ -44,13 +45,13 @@ const googleAuthCallback = async (req, res) => {
 
     const googleUser = await getGoogleUser(tokens.access_token);
 
-    let user = await User.findOne({
+    let response = await User.findOne({
       providerId: googleUser.id,
     });
 
     // Check if user already exists
-    if (!user) {
-      user = new User({
+    if (!response) {
+      response = new User({
         providerId: googleUser.id, // Use the ID from the Google token
         name: googleUser.name,
         email: googleUser.email,
@@ -61,13 +62,17 @@ const googleAuthCallback = async (req, res) => {
         hp: 100,
         device_id: null,
       });
-      await user.save();
+      await response.save();
     }
+
+    const user = response.toObject();
+    const token = signObject(user);
 
     //TODO: Create a nicer template here
     res.send(`
     <h1>Hello Express!</h1>
-      <a href="exp+alignmend:/auth?${queryString.stringify({ ...tokens, ...user.toObject() })}">Go to Weaup </a>
+      <a href="exp+alignmend:/auth?${queryString.stringify({ ...user, token })}">Go to Weaup </a>
+      ${process.env.DEV_MODE === "true" ? ` <p> ${token} </p> ` : ""}
     `);
   } catch (error) {
     res.status(500).json({ error: error.message, data: null });
