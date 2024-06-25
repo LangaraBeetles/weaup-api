@@ -5,11 +5,6 @@ dotenv.config();
 
 const checkGoogleAccessToken = async (req, res, next) => {
   try {
-    if (process.env.DEV_MODE === "true") {
-      next();
-      return;
-    }
-
     const authorizationHeader = req.headers["authorization"];
 
     if (!authorizationHeader) {
