@@ -46,6 +46,8 @@ export const createPostureRecord = async (req, res) => {
       error: null,
     });
   } catch (error) {
+    console.error({ error });
+
     res.status(500).json({
       data: null,
       error: error.messate,
@@ -91,6 +93,8 @@ export const getAllRecords = async (req, res) => {
       error: null,
     });
   } catch (error) {
+    console.error({ error });
+
     res.status(500).json({
       data: null,
       error: error.messate,
@@ -112,6 +116,8 @@ export const getRecordById = async (req, res) => {
       error: null,
     });
   } catch (error) {
+    console.error({ error });
+
     res.status(500).json({
       data: null,
       error: error.messate,
@@ -167,6 +173,8 @@ export const createPostureSession = async (req, res) => {
       error: null,
     });
   } catch (error) {
+    console.error({ error });
+
     res.status(500).json({
       data: null,
       error: error.messate,
@@ -191,6 +199,8 @@ export const getAllSessions = async (req, res) => {
       error: null,
     });
   } catch (error) {
+    console.error({ error });
+
     res.status(500).json({
       data: null,
       error: error.messate,
@@ -212,7 +222,8 @@ export const getSessionById = async (req, res) => {
       error: null,
     });
   } catch (error) {
-    console.log({ error });
+    console.error({ error });
+
     res.status(500).json({
       data: null,
       error: error.messate,
