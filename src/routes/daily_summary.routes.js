@@ -7,6 +7,9 @@ const router = express.Router();
 // POST: /api/v1/daily_summary/:date
 router.post(`${paths.daily_summary}/:date`, controllers.createDailySummary);
 
+// GET: /api/v1/daily_summary
+router.get(`${paths.daily_summary}`, controllers.getAll);
+
 // GET: /api/v1/daily_summary/:date
 router.get(`${paths.daily_summary}/:date`, controllers.getAll);
 

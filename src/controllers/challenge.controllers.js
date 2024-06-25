@@ -1,4 +1,6 @@
 import Challenge from "../models/Challenge.js";
+import User from "../models/User.js";
+import { saveJoinedChallengeNotification } from "../shared/notifications.js";
 
 // Create challenge
 export const createChallenge = async (req, res) => {
@@ -113,6 +115,18 @@ export const joinChallenge = async (req, res) => {
       // TODO: send notification to the creator
       challenge.members.push({ user_id });
       await challenge.save();
+
+      const member = await User.findById(user_id).exec();
+
+      if (member) {
+        // Save In-App Notification
+        saveJoinedChallengeNotification({
+          userId: user_id,
+          challengeName: challenge.name,
+          memberName: member.name,
+        });
+      }
+
       res.status(201).json({ data: challenge, error: null });
     } else {
       res.status(204).json({ data: null, error: null });

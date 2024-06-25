@@ -6,9 +6,7 @@ const paths = {
   daily_summary: "/daily_summary",
   challenge: "/challenges",
   user: "/user",
-  notifications: {
-    base: "/notifications",
-  },
+  notifications: "/notifications",
   auth: "/auth",
   refresh: "/auth/refresh",
 };

@@ -1,10 +1,14 @@
-import Notifications from "../models/Notifications.js";
+import Notification from "../models/Notification.js";
 
-// Get notifications by user
-export const getNotificationsByUserId = async (req, res) => {
+export const getNotifications = async (req, res) => {
   try {
-    const userId = req.params.user_id;
-    const response = await Notifications.find({ user_id: userId });
+    const user_id = req.query.user_id;
+    const id = req.query.id;
+
+    const response = await Notification.find({
+      ...(user_id !== undefined ? { user_id } : {}),
+      ...(id !== undefined ? { _id: id } : {}),
+    });
 
     res.status(200).json({ data: response ?? [], error: null });
   } catch (error) {
@@ -12,29 +16,6 @@ export const getNotificationsByUserId = async (req, res) => {
   }
 };
 
-// Get notification by user ID and notification ID
-export const getNotificationByUserAndId = async (req, res) => {
-  try {
-    const userId = req.params.user_id;
-    const notificationId = req.params.notification_id;
-    const response = await Notifications.findOne({
-      user_id: userId,
-      notification_id: notificationId,
-    });
-
-    if (!response) {
-      return res
-        .status(404)
-        .json({ data: response, error: "Notification not found" });
-    }
-
-    res.status(200).json({ data: response, error: null });
-  } catch (error) {
-    res.status(500).json({ data: null, error: error });
-  }
-};
-
 export default {
-  getNotificationsByUserId,
-  getNotificationByUserAndId,
+  getNotifications,
 };
