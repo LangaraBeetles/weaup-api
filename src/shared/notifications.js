@@ -9,12 +9,13 @@
 import dayjs from "dayjs";
 import Notification from "../models/Notification.js";
 
+// TODO: Update detail paths
 const messages = {
   joinedChallenge: {
     title: (memberName) => `${memberName} is In! 💪 `,
     message: (memberName, challengeName) =>
       `${memberName} has joined your challenge “${challengeName}”! Let’s win together!`,
-    detailPath: ``,
+    detailPath: (challengeId) => `/challenges/${challengeId}`,
     type: "joined_challenge",
   },
 
@@ -22,14 +23,14 @@ const messages = {
     title: "Challenge Completed 🎉",
     message: (challengeName) =>
       `Congratulations! Your team won the challenge “${challengeName}”!`,
-    detailPath: ``,
+    detailPath: (challengeId) => `/challenges/${challengeId}`,
     type: "challenge_finished",
   },
 
   challengeNotAchieved: {
     title: "Challenge Ended", // TODO: change copy
     message: (challengeName) => `The challenge “${challengeName}” has eneded`,
-    detailPath: ``,
+    detailPath: (challengeId) => `/challenges/${challengeId}`,
     type: "challenge_finished",
   },
 
@@ -43,6 +44,7 @@ const messages = {
 
 export const saveJoinedChallengeNotification = async ({
   userId,
+  challengeId,
   challengeName,
   memberName,
 }) => {
@@ -52,7 +54,7 @@ export const saveJoinedChallengeNotification = async ({
     const notification = new Notification({
       title: config.title(memberName),
       message: config.message(memberName, challengeName),
-      detail_path: config.detailPath,
+      detail_path: config.detailPath(challengeId),
       notification_type: config.type,
       user_id: userId,
     });
@@ -64,8 +66,9 @@ export const saveJoinedChallengeNotification = async ({
 };
 
 export const saveChallengeFinishedNotification = async ({
+  challengeId,
   achieved,
-  userId,
+  userIds,
   challengeName,
 }) => {
   try {
@@ -73,15 +76,21 @@ export const saveChallengeFinishedNotification = async ({
       ? messages.challengeAchieved
       : messages.challengeNotAchieved;
 
-    const notification = new Notification({
-      title: config.title,
-      message: config.message(challengeName),
-      detail_path: config.detailPath,
-      notification_type: config.type,
-      user_id: userId,
-    });
+    const results = await Notification.insertMany(
+      userIds?.map((user_id) => {
+        return {
+          title: config.title,
+          message: config.message(challengeName),
+          detail_path: config.detailPath(challengeId),
+          notification_type: config.type,
+          user_id,
+        };
+      }),
+    );
 
-    await notification.save();
+    if (results.length) {
+      console.log("challenge notification saved");
+    }
   } catch (error) {
     console.error(error);
   }

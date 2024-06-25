@@ -5,6 +5,8 @@ import groupBy from "lodash/groupBy.js";
 import PostureSession from "../models/PostureSession.js";
 import { saveDailySummaryNotification } from "../shared/notifications.js";
 import DailySummary from "../models/DailySummary.js";
+import User from "../models/User.js";
+import Challenge from "../models/Challenge.js";
 
 const generateDailySummaries = async () => {
   const date = dayjs().subtract(1, "day");
@@ -59,6 +61,9 @@ const generateDailySummaries = async () => {
           return accum + Number(curr.duration);
         }, 0);
 
+        const user = await User.findOne({ _id: user_id });
+        const hp = user?.hp ?? 0;
+
         const data = await DailySummary.findOneAndUpdate(
           {
             user_id,
@@ -71,6 +76,7 @@ const generateDailySummaries = async () => {
             total_good: totalGood,
             total_bad: totalBad,
             total_records: totalGood + totalBad,
+            hp,
           },
           { upsert: true, new: true },
         );
@@ -80,6 +86,32 @@ const generateDailySummaries = async () => {
           userId: user_id,
           day: date.toDate(),
         });
+
+        try {
+          // Update the points collected for the challenges
+          const challenges = await Challenge.find({
+            members: {
+              $elemMatch: {
+                user_id,
+              },
+            },
+          }).exec();
+
+          for (const challenge of challenges) {
+            challenge.members = challenge.members.map((member) => {
+              if (member.user_id === user_id) {
+                member.points = member.points + hp;
+              }
+
+              return member;
+            });
+
+            await challenge.save();
+          }
+        } catch (error) {
+          console.log("Error updating challenges");
+          console.error(error);
+        }
 
         success++;
       }

@@ -7,6 +7,8 @@ export const createDailySummary = async (req, res) => {
   try {
     const date = dayjs(req.params.date).format("YYYYMMDD");
 
+    const hp = req.body.hp ?? 0;
+
     const start_of_day = dayjs(req.params.date)
       .subtract(1, "day")
       .startOf("day")
@@ -59,6 +61,7 @@ export const createDailySummary = async (req, res) => {
         total_good: totalGood,
         total_bad: totalBad,
         total_records: totalGood + totalBad,
+        hp,
       },
       { upsert: true, new: true },
     );
