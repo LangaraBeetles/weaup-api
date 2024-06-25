@@ -5,7 +5,7 @@ import controllers from "../controllers/user.controllers.js";
 const router = express.Router();
 
 //POST /api/v1/user/
-router.post(`${paths.user}`, controllers.createUser);
+// included in public routes
 
 //PATCH /api/v1/user/:id
 router.patch(`${paths.user}/:id`, controllers.updateUser);

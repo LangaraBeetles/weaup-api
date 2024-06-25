@@ -10,6 +10,7 @@ const paths = {
     base: "/notifications",
   },
   auth: "/auth",
+  refresh: "/auth/refresh",
 };
 
 export default paths;
