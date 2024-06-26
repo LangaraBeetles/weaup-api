@@ -8,6 +8,9 @@ import publicRouter from "./src/routes/public/index.js";
 import connection from "./src/models/db.js";
 import checkGoogleAccessToken from "./src/middleware/auth.middleware.js";
 
+// Start all jobs
+import "./src/jobs/index.js";
+
 dotenv.config();
 
 const app = express();

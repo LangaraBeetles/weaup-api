@@ -7,6 +7,8 @@ export const createDailySummary = async (req, res) => {
   try {
     const date = dayjs(req.params.date).format("YYYYMMDD");
 
+    const hp = req.body.hp ?? 0;
+
     const start_of_day = dayjs(req.params.date)
       .subtract(1, "day")
       .startOf("day")
@@ -37,7 +39,7 @@ export const createDailySummary = async (req, res) => {
 
     const sessionRecords = await PostureSession.find({
       user_id,
-      createdAt: {
+      started_at: {
         $gte: start_of_day.toDate(),
         $lte: end_of_day.toDate(),
       },
@@ -59,6 +61,7 @@ export const createDailySummary = async (req, res) => {
         total_good: totalGood,
         total_bad: totalBad,
         total_records: totalGood + totalBad,
+        hp,
       },
       { upsert: true, new: true },
     );
@@ -83,8 +86,8 @@ export const getAll = async (req, res) => {
     const date = dayjs(req.params.date).format("YYYYMMDD");
 
     const data = await DailySummary.find({
-      user_id,
-      date,
+      ...(user_id !== undefined ? { user_id } : {}),
+      ...(date !== undefined ? { date } : {}),
     }).exec();
 
     res.status(200).json({

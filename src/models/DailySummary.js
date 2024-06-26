@@ -8,6 +8,11 @@ const schema = new Schema(
       type: Number,
       required: true,
     },
+    hp: {
+      type: Number,
+      min: 0,
+      required: true,
+    },
     total_good: {
       type: Number,
       required: true,

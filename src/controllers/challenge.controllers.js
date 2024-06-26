@@ -1,9 +1,26 @@
+import AuthData from "../models/Auth.js";
 import Challenge from "../models/Challenge.js";
+import User from "../models/User.js";
+import { saveJoinedChallengeNotification } from "../shared/notifications.js";
 
 // Create challenge
 export const createChallenge = async (req, res) => {
   try {
-    const data = new Challenge(req.body);
+    const user = new AuthData(req);
+
+    const data = new Challenge({
+      creator_id: user._id,
+      name: req.body?.name,
+      description: req.body?.description,
+      start_at: req.body?.start_at,
+      end_at: req.body?.end_at,
+      goal: req.body?.goal,
+      members: [
+        {
+          user_id: user._id,
+        },
+      ],
+    });
     await data.save();
     const response = {
       _id: data._id,
@@ -113,6 +130,19 @@ export const joinChallenge = async (req, res) => {
       // TODO: send notification to the creator
       challenge.members.push({ user_id });
       await challenge.save();
+
+      const member = await User.findById(user_id).exec();
+
+      if (member) {
+        // Save In-App Notification
+        saveJoinedChallengeNotification({
+          userId: user_id,
+          challengeId: challenge._id,
+          challengeName: challenge.name,
+          memberName: member.name,
+        });
+      }
+
       res.status(201).json({ data: challenge, error: null });
     } else {
       res.status(204).json({ data: null, error: null });
