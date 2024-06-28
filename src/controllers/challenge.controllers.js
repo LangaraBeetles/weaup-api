@@ -28,14 +28,17 @@ export const createChallenge = async (req, res) => {
     };
     res.status(201).json({ data: response, error: null });
   } catch (error) {
-    res.status(500).json({ data: null, error: JSON.stringify(error) });
+    res.status(500).json({ data: null, error: error.message });
   }
 };
 
 // Get all challenges
 export const getChallenges = async (req, res) => {
   try {
-    const { user_id, status } = req.query;
+    const user = new AuthData(req);
+    const status = req?.query?.status;
+    const user_id = req?.query?.user_id ?? user._id;
+
     let data = await Challenge.find();
 
     // Filter out challenges that the creater has left if user_id is provided
@@ -56,7 +59,7 @@ export const getChallenges = async (req, res) => {
 
     res.status(200).json({ data, error: null });
   } catch (error) {
-    res.status(500).json({ data: null, error: JSON.stringify(error) });
+    res.status(500).json({ data: null, error: error.message });
   }
 };
 
@@ -67,7 +70,7 @@ export const getChallengeById = async (req, res) => {
     const data = await Challenge.findById(id);
     res.status(200).json({ data, error: null });
   } catch (error) {
-    res.status(500).json({ data: null, error: JSON.stringify(error) });
+    res.status(500).json({ data: null, error: error.message });
   }
 };
 
@@ -89,7 +92,7 @@ export const removeMember = async (req, res) => {
     await challenge.save();
     res.status(200).json({ data: challenge, error: null });
   } catch (error) {
-    res.status(500).json({ data: null, error: JSON.stringify(error) });
+    res.status(500).json({ data: null, error: error.message });
   }
 };
 
@@ -148,7 +151,7 @@ export const joinChallenge = async (req, res) => {
       res.status(204).json({ data: null, error: null });
     }
   } catch (error) {
-    res.status(500).json({ data: null, error: JSON.stringify(error) });
+    res.status(500).json({ data: null, error: error.message });
   }
 };
 
