@@ -46,13 +46,13 @@ const googleAuthCallback = async (req, res) => {
     const googleUser = await getGoogleUser(tokens.access_token);
 
     let response = await User.findOne({
-      providerId: googleUser.id,
+      provider_id: googleUser.id,
     });
 
     // Check if user already exists
     if (!response) {
       response = new User({
-        providerId: googleUser.id, // Use the ID from the Google token
+        provider_id: googleUser.id, // Use the ID from the Google token
         name: googleUser.name,
         email: googleUser.email,
         preferred_mode: "phone", // TODO: update with the actual user preferences if available

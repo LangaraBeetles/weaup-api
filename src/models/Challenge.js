@@ -10,7 +10,7 @@ const Member = new Schema({
 const schema = new Schema({
   creator_id: { type: String, required: true },
   name: { type: String, required: true },
-  description: { type: String, required: false },
+  description: { type: String, required: false, default: "" },
   start_at: { type: Date, default: Date.now(), required: false },
   end_at: { type: Date, required: true },
   goal: { type: Number, required: true },

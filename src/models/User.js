@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
 
 const schema = new Schema({
-  providerId: { type: String, required: false },
+  provider_id: { type: String, required: false },
   name: { type: String, default: null, required: false },
   email: { type: String, default: null, required: false, unique: false },
   preferred_mode: {
