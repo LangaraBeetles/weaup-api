@@ -35,7 +35,10 @@ export const createChallenge = async (req, res) => {
 // Get all challenges
 export const getChallenges = async (req, res) => {
   try {
-    const { user_id, status } = req.query;
+    const user = new AuthData(req);
+    const status = req?.query?.status;
+    const user_id = req?.query?.user_id ?? user._id;
+
     let data = await Challenge.find();
 
     // Filter out challenges that the creater has left if user_id is provided
