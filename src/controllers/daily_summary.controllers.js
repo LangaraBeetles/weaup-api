@@ -2,6 +2,7 @@ import dayjs from "dayjs";
 import DailySummary from "../models/DailySummary.js";
 import PostureRecord from "../models/PostureRecord.js";
 import PostureSession from "../models/PostureSession.js";
+import AuthData from "../models/Auth.js";
 
 export const createDailySummary = async (req, res) => {
   try {
@@ -16,7 +17,8 @@ export const createDailySummary = async (req, res) => {
 
     const end_of_day = dayjs(req.params.date).startOf("day").set("hour", 17);
 
-    const user_id = req?.body?.user_id;
+    const user = new AuthData(req);
+    const user_id = req?.query?.user_id ?? user._id;
 
     const postureRecords = await PostureRecord.find({
       user_id,
@@ -82,7 +84,8 @@ export const createDailySummary = async (req, res) => {
 export const getAll = async (req, res) => {
   try {
     // filters
-    const user_id = req?.query?.user_id;
+    const user = new AuthData(req);
+    const user_id = req?.query?.user_id ?? user._id;
     const date = dayjs(req.params.date).format("YYYYMMDD");
 
     const data = await DailySummary.find({

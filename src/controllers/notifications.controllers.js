@@ -1,8 +1,10 @@
 import Notification from "../models/Notification.js";
+import AuthData from "../models/Auth.js";
 
 export const getNotifications = async (req, res) => {
   try {
-    const user_id = req.query.user_id;
+    const user = new AuthData(req);
+    const user_id = req?.query?.user_id ?? user._id;
     const id = req.query.id;
 
     const response = await Notification.find({
