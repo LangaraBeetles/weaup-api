@@ -13,6 +13,7 @@ const schema = new Schema({
   description: { type: String, required: false, default: "" },
   start_at: { type: Date, default: Date.now(), required: false },
   end_at: { type: Date, required: true },
+  duration: { type: Number, required: true },
   goal: { type: Number, required: true },
   status: {
     type: String,
@@ -20,6 +21,8 @@ const schema = new Schema({
     default: "in_progress",
     required: false,
   },
+  color: { type: String, required: false },
+  icon: { type: String, required: false },
   members: [Member],
 });
 
