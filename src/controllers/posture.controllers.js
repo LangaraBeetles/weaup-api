@@ -21,6 +21,16 @@ export const createPostureRecord = async (req, res) => {
   try {
     const user = new AuthData(req);
 
+    // Check if session_id is present
+    if (req?.body?.session_id) {
+      res.status(400).json({
+        data: null,
+        error: null,
+      });
+      console.log("Cannot create a record with a session_id");
+      return;
+    }
+
     // INSERT MANY
     if (Array.isArray(req?.body)) {
       const records = req.body.map((data) => {
