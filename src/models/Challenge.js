@@ -1,6 +1,7 @@
 import { Schema, model } from "mongoose";
 
-const Member = new Schema({
+const MemberSchema = new Schema({
+  user: { type: Schema.Types.ObjectId, ref: "User", required: true },
   user_id: { type: String, required: true },
   joined_at: { type: Date, default: Date.now(), required: false },
   points: { type: Number, default: 0, required: true },
@@ -23,7 +24,7 @@ const schema = new Schema({
   },
   color: { type: String, required: false },
   icon: { type: String, required: false },
-  members: [Member],
+  members: { type: [MemberSchema] },
 });
 
 export default model("Challenge", schema);
