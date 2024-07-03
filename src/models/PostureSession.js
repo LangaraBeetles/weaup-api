@@ -6,6 +6,7 @@ const schema = new Schema(
     user_id: { type: String, required: true },
     started_at: { type: Date, required: true },
     ended_at: { type: Date, required: false },
+    score: { type: Number, required: false },
     duration: {
       type: Number,
       default: function () {

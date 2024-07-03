@@ -7,12 +7,14 @@ const createRecordObject = ({
   good_posture,
   session_id,
   recorded_at,
+  score,
 }) => {
   return new PostureRecord({
     user_id,
     good_posture: good_posture ?? false,
     session_id: session_id ?? undefined,
     recorded_at: new Date(recorded_at),
+    score: score ?? 80,
   });
 };
 
@@ -151,6 +153,7 @@ export const createPostureSession = async (req, res) => {
       total_bad: totalBad,
       total_good: totalGood,
       total_records: total,
+      score: Number(req?.body?.score ?? 80),
     });
 
     const sessionResponse = await session.save();

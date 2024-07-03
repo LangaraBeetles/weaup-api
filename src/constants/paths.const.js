@@ -7,6 +7,7 @@ const paths = {
   challenge: "/challenges",
   user: "/user",
   notifications: "/notifications",
+  analytics: "/analytics",
   auth: "/auth",
   refresh: "/auth/refresh",
 };
