@@ -35,7 +35,7 @@ const updateFinishedChallenges = async () => {
 
       const achieved = avPoinst >= challenge.goal;
 
-      challenge.status = achieved ? "achieved" : "not_achieved";
+      challenge.status = achieved ? "completed" : "failed";
       await challenge.save();
 
       //TODO: update xp, hp, levels... etc
