@@ -14,13 +14,17 @@ export const createChallenge = async (req, res) => {
       description: req.body?.description,
       start_at: req.body?.start_at,
       end_at: req.body?.end_at,
+      duration: req.body?.duration,
       goal: req.body?.goal,
+      icon: req.body?.icon,
+      color: req.body?.color,
       members: [
         {
           user_id: user._id,
         },
       ],
     });
+
     await data.save();
     const response = {
       _id: data._id,
@@ -36,25 +40,43 @@ export const createChallenge = async (req, res) => {
 export const getChallenges = async (req, res) => {
   try {
     const user = new AuthData(req);
-    const status = req?.query?.status;
-    const user_id = req?.query?.user_id ?? user._id;
+    const filterStatus = req?.query?.filterStatus;
+    const filterUser = req?.query?.filterUser;
 
     let data = await Challenge.find();
 
-    // Filter out challenges that the creater has left if user_id is provided
-    if (user_id) {
+    //filter only if filterUser is specified. To get all, do not add "filterUser" param with GET request
+    if (filterUser) {
+      //Filter out ongoing challenges where user is a member
       data = data.filter(
         (challenge) =>
-          challenge.creator_id === user_id &&
+          (challenge.status == "in_progress" ||
+            new Date(challenge.end_at) > new Date()) &&
           challenge.members.find(
-            (member) => member.user_id === user_id && member.left_at === null,
+            (member) => member.user_id === user._id && member.left_at === null,
           ),
       );
+
+      if (filterUser == "true") {
+        // Filter out challenges that are not created by user
+        data = data.filter((challenge) => challenge.creator_id === user._id);
+      }
     }
 
-    // Filter out challenges that are not in the provided status
-    if (status) {
-      data = data.filter((challenge) => challenge.status === status);
+    //filter only if filterStatus is specified. To get all, do not add "filterStatus" param with GET request
+    if (filterStatus) {
+      //Filter out past challenges where user is a member
+      data = data.filter(
+        (challenge) =>
+          new Date(challenge.end_at) < new Date() &&
+          challenge.members.find(
+            (member) => member.user_id === user._id && member.left_at === null,
+          ),
+      );
+
+      if (filterStatus != "all") {
+        data = data.filter((challenge) => challenge.status === filterStatus);
+      }
     }
 
     res.status(200).json({ data, error: null });
