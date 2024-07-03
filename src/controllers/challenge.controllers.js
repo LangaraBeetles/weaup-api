@@ -49,7 +49,13 @@ export const getChallenges = async (req, res) => {
       // returns challenges that has end_at set to past date
       data = data.filter(
         (challenge) => new Date(challenge.end_at) < new Date(),
+
       );
+
+      if (filterUser == "true") {
+        // Filter out challenges that are not created by user
+        data = data.filter((challenge) => challenge.creator_id === user._id);
+      }
     }
     return data;
   };
