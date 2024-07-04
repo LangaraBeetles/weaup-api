@@ -11,12 +11,9 @@ import Challenge from "../models/Challenge.js";
 const generateDailySummaries = async () => {
   const date = dayjs().subtract(1, "day");
 
-  const start_of_day = dayjs(date)
-    .subtract(1, "day")
-    .startOf("day")
-    .set("hour", 17);
+  const start_of_day = dayjs(date).subtract(1, "day").startOf("day");
 
-  const end_of_day = dayjs(date).startOf("day").set("hour", 17);
+  const end_of_day = dayjs(date).endOf("day");
 
   const dailyRecords = await PostureRecord.find({
     recorded_at: {
