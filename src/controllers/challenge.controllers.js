@@ -39,6 +39,12 @@ export const createChallenge = async (req, res) => {
 
 // Get all challenges
 export const getChallenges = async (req, res) => {
+  const user = new AuthData(req);
+  const filterStatus = req?.query?.filterStatus;
+  const filterUser = req?.query?.filterUser;
+  const showOngoing = req?.query?.showOngoing;
+  const sortDesc = req?.query?.sortDesc ?? -1;
+
   const onGoingFilter = (data, filter) => {
     if (filter == "true") {
       // returns challenges that has end_at set to later or equal to current date
@@ -49,7 +55,6 @@ export const getChallenges = async (req, res) => {
       // returns challenges that has end_at set to past date
       data = data.filter(
         (challenge) => new Date(challenge.end_at) < new Date(),
-
       );
 
       if (filterUser == "true") {
@@ -89,12 +94,6 @@ export const getChallenges = async (req, res) => {
   };
 
   try {
-    const user = new AuthData(req);
-    const filterStatus = req?.query?.filterStatus;
-    const filterUser = req?.query?.filterUser;
-    const showOngoing = req?.query?.showOngoing;
-    const sortDesc = req?.query?.sortDesc ?? -1;
-
     let data = await Challenge.find()
       .sort({ start_at: Number(sortDesc) })
       .populate([
@@ -124,6 +123,7 @@ export const getChallenges = async (req, res) => {
 
     res.status(200).json({ data, error: null });
   } catch (error) {
+    console.log({ error });
     res.status(500).json({ data: null, error: error.message });
   }
 };
