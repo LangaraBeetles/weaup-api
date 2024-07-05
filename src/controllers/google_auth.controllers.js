@@ -71,7 +71,7 @@ const googleAuthCallback = async (req, res) => {
     //TODO: Create a nicer template here
     res.send(`
     <h1>Hello Express!</h1>
-      <a href="exp+alignmend:/auth?${queryString.stringify({ ...user, token })}">Go to Weaup </a>
+      <a href="exp+weaup:/auth?${queryString.stringify({ ...user, token })}">Go to Weaup </a>
       ${process.env.DEV_MODE === "true" ? ` <p> ${token} </p> ` : ""}
     `);
   } catch (error) {
