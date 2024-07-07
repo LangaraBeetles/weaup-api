@@ -5,9 +5,13 @@ import PostureSession from "../models/PostureSession.js";
 import groupBy from "lodash/groupBy.js";
 import duration from "dayjs/plugin/duration.js";
 import relativeTime from "dayjs/plugin/relativeTime.js";
+import utc from "dayjs/plugin/utc.js";
+import timezone from "dayjs/plugin/timezone.js";
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const getAnalytics = async (req, res) => {
   try {
@@ -56,7 +60,10 @@ const getAnalytics = async (req, res) => {
         const data = record.toObject();
         return {
           ...data,
-          recorded_at: dayjs(data.recorded_at).format("HH:mm"),
+          recorded_at: dayjs
+            .utc(data.recorded_at)
+            .tz("America/Vancouver")
+            .format("HH:mm"),
         };
       });
       records_by_hour = fillHourlyData(groupBy(posture_records, "recorded_at"));
@@ -127,7 +134,7 @@ const getAnalytics = async (req, res) => {
 
     res.status(500).json({
       data: null,
-      error: error.messate,
+      error: error.message,
     });
   }
 };
