@@ -20,6 +20,7 @@ const getAnalytics = async (req, res) => {
     const start_date = dayjs(req?.query?.start_date).startOf("day");
     const end_date = dayjs(req?.query?.end_date).endOf("day");
 
+    console.log({ start_date, end_date });
     const records = await PostureRecord.find({
       user_id: user._id,
       recorded_at: {
