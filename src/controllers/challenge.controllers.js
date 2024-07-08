@@ -29,7 +29,7 @@ export const createChallenge = async (req, res) => {
     await data.save();
     const response = {
       _id: data._id,
-      url: `${req.protocol}://${req.get("host")}${req.originalUrl}/challenge/invite/${data._id}`,
+      url: `${process.env.CHALLENGE_URL}id=${data._id}&user=${user._id}`,
     };
     res.status(201).json({ data: response, error: null });
   } catch (error) {
@@ -181,13 +181,17 @@ export const removeMember = async (req, res) => {
 // Join challenge
 export const joinChallenge = async (req, res) => {
   try {
+    const user = new AuthData(req);
     const { id } = req.params;
-    const { user_id, response } = req.body;
+
+    if (!user._id) {
+      return res.status(404).json({ data: null, error: "User not found" });
+    }
+
     const challenge = await Challenge.findById(id);
     const member = challenge.members.find(
-      (member) => member.user_id === user_id,
+      (member) => member.user_id === user._id,
     );
-
     if (!challenge) {
       return res.status(404).json({ data: null, error: "Challenge not found" });
     }
@@ -210,28 +214,26 @@ export const joinChallenge = async (req, res) => {
         error: "Can't join challenge that has finished or has been deleted",
       });
     }
+    challenge.members.push({
+      user: user._id, //added to link to users table
+      user_id: user._id, //workaround to filter by members
+    });
+    await challenge.save();
 
-    if (response === "accept") {
-      // TODO: send notification to the creator
-      challenge.members.push({ user_id });
-      await challenge.save();
+    const newMember = await User.findById(user._id).exec();
 
-      const member = await User.findById(user_id).exec();
+    console.log(newMember);
 
-      if (member) {
-        // Save In-App Notification
-        saveJoinedChallengeNotification({
-          userId: user_id,
-          challengeId: challenge._id,
-          challengeName: challenge.name,
-          memberName: member.name,
-        });
-      }
-
-      res.status(201).json({ data: challenge, error: null });
-    } else {
-      res.status(204).json({ data: null, error: null });
+    if (newMember) {
+      // Save In-App Notification
+      saveJoinedChallengeNotification({
+        userId: user._id,
+        challengeId: challenge._id,
+        challengeName: challenge.name,
+        memberName: newMember.name,
+      });
     }
+    res.status(201).json({ data: challenge, error: null });
   } catch (error) {
     res.status(500).json({ data: null, error: error.message });
   }
