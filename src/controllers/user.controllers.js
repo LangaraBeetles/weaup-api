@@ -45,6 +45,8 @@ const updateUser = async (req, res) => {
     user.hp = req?.body?.hp ?? user?.hp;
     user.level = req?.body?.level ?? user?.level;
 
+    user.badges = req?.body?.badges ?? user?.badges;
+
     const response = await user.save();
     res.status(200).json({ data: response, error: null });
   } catch (error) {
