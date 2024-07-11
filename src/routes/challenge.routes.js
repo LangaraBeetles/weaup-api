@@ -22,4 +22,10 @@ router.delete(
 // POST /api/v1/challenges/:id/join
 router.post(`${paths.challenge}/:id/join`, controllers.joinChallenge);
 
+// PATCH /api/v1/challenges/:id/members/:userId
+router.patch(
+  `${paths.challenge}/:id/members/:userId`,
+  controllers.updateChallengeMemberPoints,
+);
+
 export default router;
