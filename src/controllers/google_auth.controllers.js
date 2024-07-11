@@ -1,7 +1,7 @@
 import { OAuth2Client } from "google-auth-library";
 import dotenv from "dotenv";
 import User from "../models/User.js";
-import { getGoogleUser } from "../shared/user.js";
+import { getGoogleUser, userAvatar } from "../shared/user.js";
 import { signObject } from "../shared/auth.js";
 
 dotenv.config();
@@ -48,6 +48,13 @@ const googleAuthCallback = async (req, res) => {
       provider_id: googleUser.id,
     });
 
+    let avatar_bg = userAvatar[0];
+    try {
+      const randIndex = Math.floor(Math.random() * 7);
+      avatar_bg = userAvatar[randIndex];
+    } catch (error) {
+      console.log("Error assigning the user avatar", error.message);
+    }
     // Check if user already exists
     if (!response) {
       response = new User({
@@ -60,6 +67,7 @@ const googleAuthCallback = async (req, res) => {
         xp: 0,
         hp: 100,
         device_id: null,
+        avatar_bg,
       });
       await response.save();
     }
