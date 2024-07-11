@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { userAvatar } from "../shared/user";
+import { userAvatar } from "../shared/user.js";
 
 const schema = new Schema({
   provider_id: { type: String, required: false },
