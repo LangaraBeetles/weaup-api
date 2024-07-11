@@ -1,4 +1,5 @@
 import AuthData from "../models/Auth.js";
+import Challenge from "../models/Challenge.js";
 import PostureRecord from "../models/PostureRecord.js";
 import PostureSession from "../models/PostureSession.js";
 
@@ -42,6 +43,34 @@ export const createPostureRecord = async (req, res) => {
       user_id: user._id,
       ...req?.body,
     }).save();
+
+    // UPDATE USER CHALLENGE POINTS
+    const challenges = await Challenge.find({
+      "members.user_id": user._id,
+      "members.left_at": null,
+    }).exec();
+
+    const ongoingChallenges = challenges.filter(
+      (c) => new Date(c.end_at) > new Date(),
+    );
+
+    const newPoints = Array.isArray(req?.body)
+      ? req.body.filter((p) => p.good_posture).length
+      : req.body.good_posture
+        ? 1
+        : 0;
+
+    ongoingChallenges.forEach((challenge) => {
+      const member = challenge.members.find((m) => m.user_id === user._id);
+      const currentPoints = member?.points || 0;
+
+      console.log({ currentPoints, newPoints });
+
+      const points = currentPoints + newPoints;
+
+      member.points = points;
+      challenge.save();
+    });
 
     res.status(201).json({
       data,
@@ -167,6 +196,34 @@ export const createPostureSession = async (req, res) => {
     });
 
     const data = await PostureRecord.insertMany(sessionRecords);
+
+    // UPDATE USER CHALLENGE POINTS
+    const challenges = await Challenge.find({
+      "members.user_id": user._id,
+      "members.left_at": null,
+    }).exec();
+
+    const ongoingChallenges = challenges.filter(
+      (c) => new Date(c.end_at) > new Date(),
+    );
+
+    const newPoints = Array.isArray(req?.body)
+      ? req.body.filter((p) => p.good_posture).length
+      : req.body.good_posture
+        ? 1
+        : 0;
+
+    ongoingChallenges.forEach((challenge) => {
+      const member = challenge.members.find((m) => m.user_id === user._id);
+      const currentPoints = member?.points || 0;
+
+      console.log({ currentPoints, newPoints });
+
+      const points = currentPoints + newPoints;
+
+      member.points = points;
+      challenge.save();
+    });
 
     res.status(201).json({
       data: {
