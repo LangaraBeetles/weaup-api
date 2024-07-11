@@ -142,6 +142,7 @@ export const createPostureSession = async (req, res) => {
       return;
     }
 
+    const xp = req?.body?.xp ?? { initial: user.xp, final: user.xp };
     const total = records.length;
     const totalGood = records.filter((record) => !!record.good_posture).length;
     const totalBad = total - totalGood;
@@ -154,6 +155,10 @@ export const createPostureSession = async (req, res) => {
       total_good: totalGood,
       total_records: total,
       score: Number(req?.body?.score ?? 80),
+      xp: {
+        initial: xp?.initial,
+        final: xp?.final,
+      },
     });
 
     const sessionResponse = await session.save();
