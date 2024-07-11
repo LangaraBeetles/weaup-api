@@ -239,10 +239,34 @@ export const joinChallenge = async (req, res) => {
   }
 };
 
+export const updateChallengeMemberPoints = async (req, res) => {
+  try {
+    const { id, userId } = req.params;
+    const { points } = req.body;
+    const challenge = await Challenge.findById(id);
+    if (!challenge) {
+      return res.status(404).json({ data: null, error: "Challenge not found" });
+    }
+    const member = challenge.members.find(
+      (member) => member.user_id === userId,
+    );
+    if (!member) {
+      return res.status(404).json({ data: null, error: "Member not found" });
+    }
+    member.points = points;
+    await challenge.save();
+
+    res.status(200).json({ data: challenge, error: null });
+  } catch (error) {
+    res.status(500).json({ data: null, error: error.message });
+  }
+};
+
 export default {
   createChallenge,
   getChallenges,
   getChallengeById,
   removeMember,
   joinChallenge,
+  updateChallengeMemberPoints,
 };
