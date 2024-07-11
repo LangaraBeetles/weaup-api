@@ -134,14 +134,6 @@ export const createPostureSession = async (req, res) => {
 
     const records = Array.isArray(req?.body?.records) ? req?.body?.records : [];
 
-    if (!records.length) {
-      res.status(400).json({
-        data: null,
-        error: "Invalid request. Records is empty",
-      });
-      return;
-    }
-
     const xp = req?.body?.xp ?? { initial: user.xp, final: user.xp };
     const total = records.length;
     const totalGood = records.filter((record) => !!record.good_posture).length;
