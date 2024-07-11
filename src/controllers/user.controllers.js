@@ -1,15 +1,25 @@
 import User from "../models/User.js";
 import { signObject } from "../shared/auth.js";
+import { userAvatar } from "../shared/user.js";
 
 //Create User
 const createUser = async (req, res) => {
   try {
+    let avatar_bg = userAvatar[0];
+    try {
+      const randIndex = Math.floor(Math.random() * 7);
+      avatar_bg = userAvatar[randIndex];
+    } catch (error) {
+      console.log("Error assigning the user avatar", error.message);
+    }
+
     const newUser = new User({
       name: req.body.name,
       preferred_mode: req.body.preferred_mode,
       daily_goal: req.body.daily_goal,
       is_setup_complete: req.body.is_setup_complete,
       device_id: req.body.device_id,
+      avatar_bg,
     });
 
     const response = await newUser.save();

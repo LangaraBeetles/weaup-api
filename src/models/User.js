@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+import { userAvatar } from "../shared/user";
 
 const schema = new Schema({
   provider_id: { type: String, required: false },
@@ -9,6 +10,11 @@ const schema = new Schema({
     enum: ["phone", "earbuds"],
     default: "phone",
     required: true,
+  },
+  avatar_bg: {
+    type: String,
+    enum: userAvatar,
+    default: "blue1",
   },
   daily_goal: { type: Number, min: 50, default: 50, required: true },
   level: { type: Number, default: 1 },
