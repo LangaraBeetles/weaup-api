@@ -24,26 +24,6 @@ export const createPostureRecord = async (req, res) => {
   try {
     const user = new AuthData(req);
 
-    // INSERT MANY
-    if (Array.isArray(req?.body)) {
-      const records = req.body.map((data) => {
-        return createRecordObject({ user_id: user._id, ...data });
-      });
-
-      const data = await PostureRecord.insertMany(records);
-      res.status(201).json({
-        data,
-        error: null,
-      });
-      return;
-    }
-
-    // INSERT ONE
-    const data = await createRecordObject({
-      user_id: user._id,
-      ...req?.body,
-    }).save();
-
     // UPDATE USER CHALLENGE POINTS
     const challenges = await Challenge.find({
       "members.user_id": user._id,
@@ -64,13 +44,31 @@ export const createPostureRecord = async (req, res) => {
       const member = challenge.members.find((m) => m.user_id === user._id);
       const currentPoints = member?.points || 0;
 
-      console.log({ currentPoints, newPoints });
-
       const points = currentPoints + newPoints;
 
       member.points = points;
       challenge.save();
     });
+
+    // INSERT MANY
+    if (Array.isArray(req?.body)) {
+      const records = req.body.map((data) => {
+        return createRecordObject({ user_id: user._id, ...data });
+      });
+
+      const data = await PostureRecord.insertMany(records);
+      res.status(201).json({
+        data,
+        error: null,
+      });
+      return;
+    }
+
+    // INSERT ONE
+    const data = await createRecordObject({
+      user_id: user._id,
+      ...req?.body,
+    }).save();
 
     res.status(201).json({
       data,
@@ -207,19 +205,11 @@ export const createPostureSession = async (req, res) => {
       (c) => new Date(c.end_at) > new Date(),
     );
 
-    const newPoints = Array.isArray(req?.body)
-      ? req.body.filter((p) => p.good_posture).length
-      : req.body.good_posture
-        ? 1
-        : 0;
-
     ongoingChallenges.forEach((challenge) => {
       const member = challenge.members.find((m) => m.user_id === user._id);
       const currentPoints = member?.points || 0;
 
-      console.log({ currentPoints, newPoints });
-
-      const points = currentPoints + newPoints;
+      const points = currentPoints + totalGood;
 
       member.points = points;
       challenge.save();
