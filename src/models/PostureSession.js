@@ -7,6 +7,13 @@ const schema = new Schema(
     started_at: { type: Date, required: true },
     ended_at: { type: Date, required: false },
     score: { type: Number, required: false },
+    xp: {
+      type: {
+        initial: Number,
+        final: Number,
+      },
+      required: true,
+    },
     duration: {
       type: Number,
       default: function () {

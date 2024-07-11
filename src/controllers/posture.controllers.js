@@ -161,14 +161,7 @@ export const createPostureSession = async (req, res) => {
 
     const records = Array.isArray(req?.body?.records) ? req?.body?.records : [];
 
-    if (!records.length) {
-      res.status(400).json({
-        data: null,
-        error: "Invalid request. Records is empty",
-      });
-      return;
-    }
-
+    const xp = req?.body?.xp ?? { initial: user.xp, final: user.xp };
     const total = records.length;
     const totalGood = records.filter((record) => !!record.good_posture).length;
     const totalBad = total - totalGood;
@@ -181,6 +174,10 @@ export const createPostureSession = async (req, res) => {
       total_good: totalGood,
       total_records: total,
       score: Number(req?.body?.score ?? 80),
+      xp: {
+        initial: xp?.initial,
+        final: xp?.final,
+      },
     });
 
     const sessionResponse = await session.save();
