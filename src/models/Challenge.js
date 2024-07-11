@@ -16,6 +16,7 @@ const schema = new Schema({
   end_at: { type: Date, required: true },
   duration: { type: Number, required: true },
   goal: { type: Number, required: true },
+  url: { type: String, required: true },
   status: {
     type: String,
     enum: ["in_progress", "failed", "completed", "quitted"],

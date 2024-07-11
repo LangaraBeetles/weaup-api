@@ -8,6 +8,8 @@ export const createChallenge = async (req, res) => {
   try {
     const user = new AuthData(req);
 
+    const challengeUrl = `${process.env.CHALLENGE_URL}id=[challenge_id]&user=[user_id]`;
+
     const data = new Challenge({
       creator_id: user._id,
       name: req.body?.name,
@@ -26,10 +28,16 @@ export const createChallenge = async (req, res) => {
       ],
     });
 
+    let url = challengeUrl.replace("[challenge_id]", data._id);
+
+    data.url = url;
+
+    url = url.replace("[user_id]", user._id);
+
     await data.save();
     const response = {
       _id: data._id,
-      url: `${process.env.CHALLENGE_URL}id=${data._id}&user=${user._id}`,
+      url: url,
     };
     res.status(201).json({ data: response, error: null });
   } catch (error) {
