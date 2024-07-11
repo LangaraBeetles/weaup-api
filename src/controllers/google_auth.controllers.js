@@ -1,7 +1,6 @@
 import { OAuth2Client } from "google-auth-library";
 import dotenv from "dotenv";
 import User from "../models/User.js";
-import queryString from "query-string";
 import { getGoogleUser } from "../shared/user.js";
 import { signObject } from "../shared/auth.js";
 
@@ -68,12 +67,7 @@ const googleAuthCallback = async (req, res) => {
     const user = response.toObject();
     const token = signObject(user);
 
-    //TODO: Create a nicer template here
-    res.send(`
-    <h1>Hello Express!</h1>
-      <a href="exp+weaup:/auth?${queryString.stringify({ ...user, token })}">Go to Weaup </a>
-      ${process.env.DEV_MODE === "true" ? ` <p> ${token} </p> ` : ""}
-    `);
+    res.status(200).json({ error: null, data: { ...user, token } });
   } catch (error) {
     res.status(500).json({ error: error.message, data: null });
   }
