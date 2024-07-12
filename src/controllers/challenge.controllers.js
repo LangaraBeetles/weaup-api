@@ -204,33 +204,33 @@ export const joinChallenge = async (req, res) => {
       return res.status(404).json({ data: null, error: "Challenge not found" });
     }
 
-    if (member && member.left_at === null) {
-      return res
-        .status(400)
-        .json({ data: null, error: "User already in challenge" });
-    }
-
     if (member && member.left_at !== null) {
       member.left_at = null;
       await challenge.save();
       return res.status(201).json({ data: challenge, error: null });
     }
 
-    if (!challenge.status === "in_progress") {
+    if (challenge.status !== "in_progress") {
       return res.status(400).json({
         data: null,
         error: "Can't join challenge that has finished or has been deleted",
       });
     }
-    challenge.members.push({
-      user: user._id, //added to link to users table
-      user_id: user._id, //workaround to filter by members
-    });
+
+    if (member && member.left_at === null) {
+      // return res
+      //   .status(400)
+      //   .json({ data: null, error: "User already in challenge" });
+    } else {
+      challenge.members.push({
+        user: user._id, //added to link to users table
+        user_id: user._id, //workaround to filter by members
+      });
+    }
+
     await challenge.save();
 
     const newMember = await User.findById(user._id).exec();
-
-    console.log(newMember);
 
     if (newMember) {
       // Save In-App Notification
@@ -238,7 +238,7 @@ export const joinChallenge = async (req, res) => {
         userId: user._id,
         challengeId: challenge._id,
         challengeName: challenge.name,
-        memberName: newMember.name,
+        memberName: user.name,
       });
     }
     res.status(201).json({ data: challenge, error: null });
