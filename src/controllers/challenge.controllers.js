@@ -227,6 +227,8 @@ export const joinChallenge = async (req, res) => {
         user_id: user._id, //workaround to filter by members
       });
 
+      await challenge.save();
+
       const newMember = await User.findById(user._id).exec();
 
       if (newMember) {
@@ -239,8 +241,6 @@ export const joinChallenge = async (req, res) => {
         });
       }
     }
-
-    await challenge.save();
 
     res.status(201).json({ data: challenge, error: null });
   } catch (error) {
