@@ -226,21 +226,22 @@ export const joinChallenge = async (req, res) => {
         user: user._id, //added to link to users table
         user_id: user._id, //workaround to filter by members
       });
+
+      await challenge.save();
+
+      const newMember = await User.findById(user._id).exec();
+
+      if (newMember) {
+        // Save In-App Notification
+        saveJoinedChallengeNotification({
+          userId: challenge.creator_id,
+          challengeId: challenge._id,
+          challengeName: challenge.name,
+          memberName: user.name,
+        });
+      }
     }
 
-    await challenge.save();
-
-    const newMember = await User.findById(user._id).exec();
-
-    if (newMember) {
-      // Save In-App Notification
-      saveJoinedChallengeNotification({
-        userId: user._id,
-        challengeId: challenge._id,
-        challengeName: challenge.name,
-        memberName: user.name,
-      });
-    }
     res.status(201).json({ data: challenge, error: null });
   } catch (error) {
     res.status(500).json({ data: null, error: error.message });
