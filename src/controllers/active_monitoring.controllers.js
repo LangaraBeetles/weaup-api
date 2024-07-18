@@ -4,24 +4,13 @@ import AuthData from "../models/Auth.js";
 export const getActiveMonitoring = async (req, res) => {
   try {
     const user = new AuthData(req);
+    const user_id = user._id;
 
-    const { user_id } = req.query;
-    console.log("Query params:", req.query);
-
-    let query = {};
-    if (user_id) {
-      query.user_id = user._id;
-    }
-
-    const activeMonitoringSessions = await ActiveMonitoring.find(query);
-    console.log(
-      "Active monitoring sessions retrieved:",
-      activeMonitoringSessions,
-    );
+    const activeMonitoringSessions = await ActiveMonitoring.find({ user_id });
 
     res.status(200).json(activeMonitoringSessions);
   } catch (error) {
-    console.error("Error retrieving active monitoring sessions:", error);
+    console.error(error);
     res.status(500).json({ message: error.message });
   }
 };
