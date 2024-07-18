@@ -97,7 +97,7 @@ const getAnalytics = async (req, res) => {
         total_corrections: posture_records.filter((data) => !data.good_posture)
           .length,
         sessions: sessions.map((data) => {
-          const durationObj = dayjs.duration(data.duration, "minutes");
+          const durationObj = dayjs.duration(data.duration, "seconds");
 
           const days = Math.floor(durationObj.asDays());
           const hours = durationObj.hours();
