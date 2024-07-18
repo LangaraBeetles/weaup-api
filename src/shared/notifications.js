@@ -8,6 +8,7 @@
 
 import dayjs from "dayjs";
 import Notification from "../models/Notification.js";
+import { sendMessage } from "../controllers/pusher.controller.js";
 
 // TODO: Update detail paths
 const messages = {
@@ -60,6 +61,17 @@ export const saveJoinedChallengeNotification = async ({
     });
 
     await notification.save();
+
+    sendMessage(userId, {
+      data: {
+        memberName,
+        challengeName,
+        challengeId,
+        notificationId: notification._id,
+        detailPath: config.detailPath(challengeId),
+      },
+      category: config.type,
+    });
   } catch (error) {
     console.error(error);
   }
