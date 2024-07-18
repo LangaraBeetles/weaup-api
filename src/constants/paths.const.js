@@ -10,6 +10,7 @@ const paths = {
   analytics: "/analytics",
   auth: "/auth",
   refresh: "/auth/refresh",
+  active_monitoring: "/active_monitoring",
 };
 
 export default paths;
