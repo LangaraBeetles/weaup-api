@@ -12,7 +12,7 @@ export const userAvatar = [
 
 export const getGoogleUser = async (token) => {
   const { data } = await axios.get(
-    "https://www.googleapis.com/oauth2/v2/userinfo",
+    "https://www.googleapis.com/userinfo/v2/me",
     {
       headers: {
         Authorization: `Bearer ${token}`,
