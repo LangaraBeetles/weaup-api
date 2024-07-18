@@ -66,16 +66,15 @@ const createUsers = async (req, res) => {
 
     await User.bulkWrite(bulkUserOps);
 
-    const users = await User.find({
-      email: "hamesterwonnyo@gmail.com",
-    }).exec();
+    const users = await User.find().exec();
 
     const postureRecords = users.map((user) => {
       const userRecords = new Array(daysDiff).fill({}).map((_, dayIndex) => {
         const dailyRecords = [];
-        const randomHour = Math.floor(Math.random() * 22);
 
         for (let i = 0; i < 50; i++) {
+          const randomHour = Math.floor(Math.random() * 22);
+
           const createdAt = dayjs()
             .subtract(daysDiff - (dayIndex + 1), "days")
             .set("hour", randomHour)
