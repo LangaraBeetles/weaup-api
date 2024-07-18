@@ -11,6 +11,7 @@ const paths = {
   auth: "/auth",
   refresh: "/auth/refresh",
   active_monitoring: "/active_monitoring",
+  mockdata: "/mock",
 };
 
 export default paths;

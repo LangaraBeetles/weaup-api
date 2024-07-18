@@ -20,7 +20,7 @@ const schema = new Schema(
         const startedAt = dayjs(this.started_at);
         const endedAt = dayjs(this.ended_at);
         if (startedAt.isValid() && endedAt.isValid()) {
-          return endedAt.diff(startedAt, "minutes");
+          return endedAt.diff(startedAt, "seconds");
         }
         return 0;
       },
