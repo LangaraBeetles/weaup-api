@@ -13,12 +13,21 @@ dayjs.extend(relativeTime);
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
+const DATE_FORMAT = "YYYY-M-D";
+
 const getAnalytics = async (req, res) => {
   try {
     const user = new AuthData(req);
 
     const start_date = dayjs(req?.query?.start_date).startOf("day");
     const end_date = dayjs(req?.query?.end_date).endOf("day");
+    const isSame = start_date.isSame(end_date, "date");
+
+    const term = isSame
+      ? "day"
+      : Math.abs(end_date.diff(start_date, "days")) === 6
+        ? "week"
+        : "month";
 
     const records = await PostureRecord.find({
       user_id: user._id,
@@ -53,20 +62,35 @@ const getAnalytics = async (req, res) => {
       console.error(error);
     }
 
-    let records_by_hour = [];
+    let records_by_term = [];
     let posture_records = [];
     try {
       posture_records = records.map((record) => {
         const data = record.toObject();
+
+        if (term === "day") {
+          return {
+            ...data,
+            recorded_at: dayjs
+              .utc(data.recorded_at)
+              .tz("America/Vancouver")
+              .format("HH:mm"),
+          };
+        }
+
         return {
           ...data,
           recorded_at: dayjs
             .utc(data.recorded_at)
             .tz("America/Vancouver")
-            .format("HH:mm"),
+            .format(DATE_FORMAT),
         };
       });
-      records_by_hour = fillHourlyData(groupBy(posture_records, "recorded_at"));
+      const grouped = groupBy(posture_records, "recorded_at");
+      records_by_term =
+        term === "day"
+          ? fillHourlyData(grouped)
+          : fillDailyData(grouped, start_date, end_date);
     } catch (error) {
       console.error(error);
     }
@@ -87,13 +111,14 @@ const getAnalytics = async (req, res) => {
 
     res.status(200).json({
       data: {
+        term,
         start_date,
         end_date,
         overview: {
           good_posture_count: overview?.good ?? 0,
           bad_posture_count: overview?.bad ?? 0,
         },
-        records_by_hour,
+        records_by_term: records_by_term,
         total_corrections: posture_records.filter((data) => !data.good_posture)
           .length,
         sessions: sessions.map((data) => {
@@ -146,13 +171,13 @@ function fillHourlyData(data) {
   );
 
   const hourlyData = hours.map((hour) => ({
-    hour,
+    key: hour,
     records: [],
   }));
 
   for (const [time, records] of Object.entries(data)) {
     const hour = time.slice(0, 2) + ":00";
-    const hourEntry = hourlyData.find((h) => h.hour === hour);
+    const hourEntry = hourlyData.find((h) => h.key === hour);
     if (hourEntry) {
       hourEntry.records.push(...records);
     }
@@ -162,9 +187,42 @@ function fillHourlyData(data) {
     ...values,
     count: values.records.length,
     score:
-      values.records?.reduce((accum, curr) => {
-        return accum + (curr.score ?? 80);
-      }, 0) / values.records.length,
+      Number(
+        values.records?.reduce((accum, curr) => {
+          return accum + curr.score;
+        }, 0) / values.records.length,
+      ) || 0,
+  }));
+}
+
+function fillDailyData(data, start, end) {
+  const days = [];
+
+  const diff = Math.abs(end.diff(start, "days"));
+
+  for (let d = 0; d <= diff; d++) {
+    days.push(dayjs(start).add(d, "days").format(DATE_FORMAT));
+  }
+
+  const dailyData = days.map((day) => ({
+    key: day,
+    records: [],
+  }));
+
+  for (const [date, records] of Object.entries(data)) {
+    const dayEntry = dailyData.find((d) => d.key === date);
+    if (dayEntry) {
+      dayEntry.records.push(...records);
+    }
+  }
+
+  return dailyData.map((values) => ({
+    ...values,
+    count: values.records.length,
+    score: values.records.length
+      ? values.records.reduce((accum, curr) => accum + (curr.score ?? 80), 0) /
+        values.records.length
+      : 0,
   }));
 }
 
