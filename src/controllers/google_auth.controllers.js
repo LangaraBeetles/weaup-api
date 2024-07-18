@@ -45,7 +45,14 @@ const googleAuthCallback = async (req, res) => {
     const googleUser = await getGoogleUser(tokens.access_token);
 
     let response = await User.findOne({
-      provider_id: googleUser.id,
+      $or: [
+        {
+          provider_id: googleUser.id,
+        },
+        {
+          email: googleUser?.email,
+        },
+      ],
     });
 
     let avatar_bg = userAvatar[0];
