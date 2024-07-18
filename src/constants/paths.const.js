@@ -10,6 +10,7 @@ const paths = {
   analytics: "/analytics",
   auth: "/auth",
   refresh: "/auth/refresh",
+  mockdata: "/mock",
 };
 
 export default paths;
