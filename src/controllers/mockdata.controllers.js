@@ -83,7 +83,7 @@ const createUsers = async (req, res) => {
 
           dailyRecords.push({
             createdAt: createdAt,
-            good_posture: Math.random() >= 0.5,
+            good_posture: Math.random() < dayIndex / daysDiff,
             score: Math.floor(Math.random() * 100) + 1,
             recorded_at: createdAt,
             updatedAt: createdAt,
