@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import User from "../models/User.js";
+import Challenge from "../models/Challenge.js";
 import PostureRecord from "../models/PostureRecord.js";
 import { signObject } from "../shared/auth.js";
 
@@ -129,7 +130,62 @@ const impersonate = async (req, res) => {
   }
 };
 
+const joinChallenge = async (req, res) => {
+  try {
+    const challengeId = req.params.challenge_id;
+
+    const challenge = await Challenge.findById(challengeId);
+
+    if (!challenge) {
+      res.status(400).json({ error: "Challenge not found", data: null });
+      return;
+    }
+
+    if (!challenge.members) {
+      challenge.members = [];
+    }
+
+    const users = await User.find().exec();
+
+    let usersAdded = 0;
+
+    for (const user of users) {
+      if (
+        user.email &&
+        user.name &&
+        !challenge.members.some(
+          (member) => member.user_id === user._id.toString(),
+        )
+      ) {
+        challenge.members.push({
+          user: user._id,
+          user_id: user._id.toString(),
+          joined_at: new Date(),
+          points: 0,
+          left_at: null,
+        });
+        usersAdded++;
+      }
+    }
+
+    if (usersAdded > 0) {
+      await challenge.save();
+      res.status(200).json({
+        error: null,
+        data: `Added ${usersAdded} users to the challenge`,
+      });
+    } else {
+      res
+        .status(200)
+        .json({ error: null, data: "All users are already in the challenge" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message, data: null });
+  }
+};
+
 export default {
   impersonate,
   createUsers,
+  joinChallenge,
 };

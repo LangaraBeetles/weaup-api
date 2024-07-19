@@ -37,12 +37,9 @@ const googleAuthRedirect = (req, res) => {
 
 // Function to handle Google OAuth2 callback
 const googleAuthCallback = async (req, res) => {
-  const code = req.query.code;
+  const { code } = req.query;
   try {
-    const { tokens } = await client.getToken(code);
-    client.setCredentials(tokens);
-
-    const googleUser = await getGoogleUser(tokens.access_token);
+    const googleUser = await getGoogleUser(code);
 
     let response = await User.findOne({
       $or: [
