@@ -3,6 +3,7 @@ import User from "../models/User.js";
 import Challenge from "../models/Challenge.js";
 import PostureRecord from "../models/PostureRecord.js";
 import { signObject } from "../shared/auth.js";
+import { saveJoinedChallengeNotification } from "../shared/notifications.js";
 
 const knownUsers = [
   {
@@ -164,18 +165,26 @@ const joinChallenge = async (req, res) => {
           points: 0,
           left_at: null,
         });
+
+        setTimeout(async () => {
+          await saveJoinedChallengeNotification({
+            userId: challenge.creator_id,
+            challengeId,
+            challengeName: challenge.name,
+            memberName: user.name,
+          });
+        }, 500);
+
         usersAdded++;
       }
     }
 
     if (usersAdded > 0) {
       await challenge.save();
-      res
-        .status(200)
-        .json({
-          error: null,
-          data: `Added ${usersAdded} users to the challenge`,
-        });
+      res.status(200).json({
+        error: null,
+        data: `Added ${usersAdded} users to the challenge`,
+      });
     } else {
       res
         .status(200)
