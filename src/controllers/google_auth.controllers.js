@@ -79,9 +79,8 @@ const googleAuthCallback = async (req, res) => {
       response.provider_id = googleUser.id;
       response.name = googleUser.name;
       response.email = googleUser.email;
+      await response.save();
     }
-
-    await response.save();
 
     const result = response.toObject();
     const token = signObject(result);
