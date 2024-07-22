@@ -84,6 +84,8 @@ const googleAuthCallback = async (req, res) => {
         (response.daily_goal = user?.dailyGoal),
         (response.is_setup_complete = user?.isSetupComplete),
         (response.level = user?.level),
+        (response.xp = user?.xp),
+        (response.hp = user?.hp),
         (response.daily_streak_counter = user?.dailyStreakCounter),
         await response.save();
     }
