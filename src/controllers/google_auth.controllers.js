@@ -54,14 +54,14 @@ const googleAuthCallback = async (req, res) => {
 
     if (!response) {
       if (user?.id) {
-        //if email or providerId not found, look for guest user to assign the email to the existing guest account
+        //if email or providerId not found, look for guest user
         response = await User.findOne({
           _id: user?.id,
         }).exec();
       }
 
       if (!response) {
-        //if guest id was not found, create new user
+        //if guest id was not found, create new guest user
         let avatar_bg = userAvatar[0];
         try {
           const randIndex = Math.floor(Math.random() * 7);
@@ -70,16 +70,22 @@ const googleAuthCallback = async (req, res) => {
           console.log("Error assigning the user avatar", error.message);
         }
         response = new User({
-          preferred_mode: user?.preferredMode,
-          daily_goal: user?.dailyGoal,
-          is_setup_complete: user?.isSetupComplete,
           avatar_bg,
         });
       }
+
+      //assign the email to the guest user
       response.provider_id = googleUser.id;
       response.name = googleUser.name;
       response.email = googleUser.email;
-      await response.save();
+
+      //update user details
+      (response.preferred_mode = user?.preferredMode),
+        (response.daily_goal = user?.dailyGoal),
+        (response.is_setup_complete = user?.isSetupComplete),
+        (response.level = user?.level),
+        (response.daily_streak_counter = user?.dailyStreakCounter),
+        await response.save();
     }
 
     const result = response.toObject();
