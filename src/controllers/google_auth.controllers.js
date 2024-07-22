@@ -37,7 +37,7 @@ const googleAuthRedirect = (req, res) => {
 
 // Function to handle Google OAuth2 callback
 const googleAuthCallback = async (req, res) => {
-  const { code } = req.query;
+  const { code, user } = req.query;
   try {
     const googleUser = await getGoogleUser(code);
 
@@ -52,34 +52,41 @@ const googleAuthCallback = async (req, res) => {
       ],
     });
 
-    let avatar_bg = userAvatar[0];
-    try {
-      const randIndex = Math.floor(Math.random() * 7);
-      avatar_bg = userAvatar[randIndex];
-    } catch (error) {
-      console.log("Error assigning the user avatar", error.message);
-    }
-    // Check if user already exists
     if (!response) {
-      response = new User({
-        provider_id: googleUser.id, // Use the ID from the Google token
-        name: googleUser.name,
-        email: googleUser.email,
-        preferred_mode: "phone", // TODO: update with the actual user preferences if available
-        daily_goal: 50,
-        is_setup_complete: false,
-        xp: 0,
-        hp: 100,
-        device_id: null,
-        avatar_bg,
-      });
-      await response.save();
+      if (user?.id) {
+        //if email or providerId not found, look for guest user to assign the email to the existing guest account
+        response = await User.findOne({
+          _id: user?.id,
+        }).exec();
+      }
+
+      if (!response) {
+        //if guest id was not found, create new user
+        let avatar_bg = userAvatar[0];
+        try {
+          const randIndex = Math.floor(Math.random() * 7);
+          avatar_bg = userAvatar[randIndex];
+        } catch (error) {
+          console.log("Error assigning the user avatar", error.message);
+        }
+        response = new User({
+          preferred_mode: user?.preferredMode,
+          daily_goal: user?.dailyGoal,
+          is_setup_complete: user?.isSetupComplete,
+          avatar_bg,
+        });
+      }
+      response.provider_id = googleUser.id;
+      response.name = googleUser.name;
+      response.email = googleUser.email;
     }
 
-    const user = response.toObject();
-    const token = signObject(user);
+    await response.save();
 
-    res.status(200).json({ error: null, data: { ...user, token } });
+    const result = response.toObject();
+    const token = signObject(result);
+
+    res.status(200).json({ error: null, data: { ...result, token } });
   } catch (error) {
     res.status(500).json({ error: error.message, data: null });
   }
