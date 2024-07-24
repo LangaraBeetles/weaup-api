@@ -11,6 +11,7 @@ const knownUsers = [
     name: "Reinhardt Botha",
     email: "botha.wr@gmail.com",
     avatar_bg: "blue2",
+    avatar_img: "Image03",
     daily_goal: 90,
     level: 1,
   },
@@ -20,6 +21,7 @@ const knownUsers = [
     email: "hamesterwonnyo@gmail.com",
     avatar_bg: "yellow2",
     daily_goal: 50,
+    avatar_img: "Image08",
     level: 2,
   },
   {
@@ -28,6 +30,7 @@ const knownUsers = [
     email: "liadrian2006@gmail.com",
     avatar_bg: "yellow1",
     daily_goal: 80,
+    avatar_img: "Image04",
     level: 3,
   },
   {
@@ -36,7 +39,26 @@ const knownUsers = [
     email: "vic.portus@gmail.com",
     avatar_bg: "blue1",
     daily_goal: 95,
+    avatar_img: "Image01",
     level: 4,
+  },
+  {
+    provider_id: "116103692621192846355",
+    name: "Beck",
+    email: "developer.beck@gmail.com",
+    avatar_bg: "red2",
+    daily_goal: 95,
+    avatar_img: "Image06",
+    level: 1,
+  },
+  {
+    provider_id: "102267297840992590717",
+    name: "Pooja Chauhan",
+    email: "poojachauhan8346@gmail.com",
+    avatar_bg: "red1",
+    daily_goal: 95,
+    avatar_img: "Image02",
+    level: 1,
   },
 ];
 
@@ -53,6 +75,7 @@ const createUsers = async (req, res) => {
           $set: {
             name: data.name,
             avatar_bg: data.avatar_bg,
+            avatar_img: data.avatar_img,
             daily_goal: data.daily_goal ?? 80,
             hp: data.hp ?? Math.floor(Math.random() * 100),
             xp: data.xp ?? Math.floor(Math.random() * 950),
