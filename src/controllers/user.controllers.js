@@ -16,7 +16,7 @@ const createUser = async (req, res) => {
     }
 
     try {
-      const randIndex = Math.floor(Math.random() * 9) + 1;
+      const randIndex = Math.floor(Math.random() * 10);
       avatar_img = userAvatar[randIndex];
     } catch (error) {
       console.log("Error assigning the user avatar", error.message);

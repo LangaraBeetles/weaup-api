@@ -11,7 +11,6 @@ export const userBg = [
 ];
 
 export const userAvatar = [
-  "Guest",
   "Image01",
   "Image02",
   "Image03",
