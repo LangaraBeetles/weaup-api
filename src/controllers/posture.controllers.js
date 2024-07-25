@@ -2,6 +2,7 @@ import AuthData from "../models/Auth.js";
 import Challenge from "../models/Challenge.js";
 import PostureRecord from "../models/PostureRecord.js";
 import PostureSession from "../models/PostureSession.js";
+import User from "../models/User.js";
 
 const createRecordObject = ({
   user_id,
@@ -191,6 +192,14 @@ export const createPostureSession = async (req, res) => {
     });
 
     const data = await PostureRecord.insertMany(sessionRecords);
+
+    //UPDATE USER DETAILS
+    const userData = await User.findById(user._id);
+    userData.xp = xp?.final ?? userData.xp;
+    userData.hp = req?.body?.score ? Number(req?.body?.score) : userData.hp;
+    userData.daily_streak_counter =
+      req?.body?.dailyStreakCounter ?? userData.daily_streak_counter;
+    userData.save();
 
     // UPDATE USER CHALLENGE POINTS
     const challenges = await Challenge.find({
