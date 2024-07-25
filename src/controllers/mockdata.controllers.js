@@ -5,6 +5,9 @@ import PostureRecord from "../models/PostureRecord.js";
 import { signObject } from "../shared/auth.js";
 import { saveJoinedChallengeNotification } from "../shared/notifications.js";
 
+import utc from "dayjs/plugin/utc.js";
+dayjs.extend(utc);
+
 const knownUsers = [
   {
     provider_id: "116444898795453345594",
@@ -13,17 +16,31 @@ const knownUsers = [
     avatar_bg: "blue2",
     avatar_img: "Image03",
     daily_goal: 90,
-    level: 1,
+    level: 4,
+    badges: [
+      {
+        id: 1,
+        date: dayjs().format(),
+      },
+      {
+        id: 2,
+        date: dayjs().format(),
+      },
+      {
+        id: 3,
+        date: dayjs().format(),
+      },
+    ],
   },
-  {
-    provider_id: "115514306099391085602",
-    name: "Wonnyo",
-    email: "hamesterwonnyo@gmail.com",
-    avatar_bg: "yellow2",
-    daily_goal: 50,
-    avatar_img: "Image08",
-    level: 2,
-  },
+  // {
+  //   provider_id: "115514306099391085602",
+  //   name: "Wonnyo",
+  //   email: "hamesterwonnyo@gmail.com",
+  //   avatar_bg: "yellow2",
+  //   daily_goal: 50,
+  //   avatar_img: "Image08",
+  //   level: 2,
+  // },
   {
     provider_id: "118220025205148090669",
     name: "Adrian Li",
@@ -32,6 +49,7 @@ const knownUsers = [
     daily_goal: 80,
     avatar_img: "Image04",
     level: 3,
+    badges: [],
   },
   {
     provider_id: "103932600454537999157",
@@ -41,6 +59,7 @@ const knownUsers = [
     daily_goal: 95,
     avatar_img: "Image01",
     level: 4,
+    badges: [],
   },
   {
     provider_id: "116103692621192846355",
@@ -50,6 +69,7 @@ const knownUsers = [
     daily_goal: 95,
     avatar_img: "Image06",
     level: 1,
+    badges: [],
   },
   {
     provider_id: "102267297840992590717",
@@ -59,14 +79,21 @@ const knownUsers = [
     daily_goal: 95,
     avatar_img: "Image02",
     level: 1,
+    badges: [],
   },
 ];
 
 const createUsers = async (req, res) => {
   try {
-    const startDate = dayjs().startOf("day").subtract(7, "days");
+    const days = req?.query?.days ?? 7;
+    const startDate = dayjs().startOf("day").subtract(days, "days");
     const endDate = dayjs();
     const daysDiff = endDate.diff(startDate, "days");
+
+    //Delete the new user if exists
+    await User.deleteOne({
+      email: "hamesterwonnyo@gmail.com",
+    }).exec();
 
     const bulkUserOps = knownUsers.map((data) => ({
       updateOne: {
@@ -82,7 +109,7 @@ const createUsers = async (req, res) => {
             level: data.level ?? Math.floor(Math.random() * 5) + 1,
             preferred_mode: "phone",
             is_setup_complete: true,
-            badges: [],
+            badges: data?.badges ?? [],
           },
         },
         upsert: true,
@@ -91,6 +118,44 @@ const createUsers = async (req, res) => {
 
     await User.bulkWrite(bulkUserOps);
 
+    /// Create challenge
+
+    await Challenge.deleteMany({}).exec();
+
+    const existingUser = await User.findOne({
+      email: "botha.wr@gmail.com",
+    }).exec();
+
+    if (existingUser) {
+      const challengeUrl = `${process.env.CHALLENGE_URL}id=[challenge_id]&user=[user_id]`;
+
+      const data = new Challenge({
+        creator_id: existingUser._id,
+        name: "Reins Challenge",
+        description: "",
+        start_at: dayjs().format(),
+        end_at: dayjs().add(5, "days").format(),
+        duration: 5,
+        goal: 85,
+        color: "#D3E7FF",
+        members: [
+          {
+            user: existingUser._id, //added to link to users table
+            user_id: existingUser._id, //workaround to filter by members
+          },
+        ],
+      });
+
+      let url = challengeUrl.replace("[challenge_id]", data._id);
+
+      data.url = url;
+
+      url = url.replace("[user_id]", existingUser._id);
+
+      await data.save();
+    }
+
+    ///
     const users = await User.find().exec();
 
     const postureRecords = users.map((user) => {
@@ -106,9 +171,14 @@ const createUsers = async (req, res) => {
             .set("minute", i)
             .toDate();
 
+          const easeInOutQuad = (t) =>
+            t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+          const adjustedIndex = easeInOutQuad(dayIndex / daysDiff);
+          const good_posture = Math.random() < adjustedIndex;
+
           dailyRecords.push({
             createdAt: createdAt,
-            good_posture: Math.random() < dayIndex / daysDiff,
+            good_posture,
             score: Math.floor(Math.random() * 100) + 1,
             recorded_at: createdAt,
             updatedAt: createdAt,
