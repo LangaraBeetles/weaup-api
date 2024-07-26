@@ -16,6 +16,7 @@ const knownUsers = [
     avatar_bg: "blue2",
     daily_goal: 90,
     level: 4,
+    xp: 10,
     daily_streak_counter: 3,
     badges: [
       {
