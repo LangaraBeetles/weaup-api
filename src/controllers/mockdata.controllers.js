@@ -17,6 +17,7 @@ const knownUsers = [
     avatar_img: "Image03",
     daily_goal: 90,
     level: 4,
+    daily_streak_counter: 3,
     badges: [
       {
         id: 1,
@@ -50,6 +51,7 @@ const knownUsers = [
     avatar_img: "Image04",
     level: 3,
     badges: [],
+    daily_streak_counter: 0,
   },
   {
     provider_id: "103932600454537999157",
@@ -60,6 +62,7 @@ const knownUsers = [
     avatar_img: "Image01",
     level: 4,
     badges: [],
+    daily_streak_counter: 0,
   },
   {
     provider_id: "116103692621192846355",
@@ -70,6 +73,7 @@ const knownUsers = [
     avatar_img: "Image06",
     level: 1,
     badges: [],
+    daily_streak_counter: 0,
   },
   {
     provider_id: "102267297840992590717",
@@ -80,6 +84,7 @@ const knownUsers = [
     avatar_img: "Image02",
     level: 1,
     badges: [],
+    daily_streak_counter: 0,
   },
 ];
 
@@ -110,6 +115,7 @@ const createUsers = async (req, res) => {
             preferred_mode: "phone",
             is_setup_complete: true,
             badges: data?.badges ?? [],
+            daily_streak_counter: data?.daily_streak_counter ?? 0,
           },
         },
         upsert: true,
