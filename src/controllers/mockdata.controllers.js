@@ -14,6 +14,7 @@ const knownUsers = [
     name: "Reinhardt Botha",
     email: "botha.wr@gmail.com",
     avatar_bg: "blue2",
+    avatar_img: "Image03",
     daily_goal: 90,
     level: 4,
     xp: 10,
@@ -48,6 +49,7 @@ const knownUsers = [
     email: "liadrian2006@gmail.com",
     avatar_bg: "yellow1",
     daily_goal: 80,
+    avatar_img: "Image04",
     level: 3,
     badges: [],
     daily_streak_counter: 0,
@@ -58,6 +60,7 @@ const knownUsers = [
     email: "vic.portus@gmail.com",
     avatar_bg: "blue1",
     daily_goal: 95,
+    avatar_img: "Image01",
     level: 4,
     badges: [],
     daily_streak_counter: 0,
@@ -105,6 +108,7 @@ const createUsers = async (req, res) => {
           $set: {
             name: data.name,
             avatar_bg: data.avatar_bg,
+            avatar_img: data.avatar_img,
             daily_goal: data.daily_goal ?? 80,
             hp: data.hp ?? Math.floor(Math.random() * 100),
             xp: data.xp ?? Math.floor(Math.random() * 950),
@@ -134,7 +138,7 @@ const createUsers = async (req, res) => {
 
       const data = new Challenge({
         creator_id: existingUser._id,
-        name: "My First Challenge",
+        name: "Reins Challenge",
         description: "",
         start_at: dayjs().format(),
         end_at: dayjs().add(5, "days").format(),

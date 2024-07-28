@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { userAvatar } from "../shared/user.js";
+import { userAvatar, userBg } from "../shared/user.js";
 
 const schema = new Schema({
   provider_id: { type: String, required: false },
@@ -13,8 +13,13 @@ const schema = new Schema({
   },
   avatar_bg: {
     type: String,
-    enum: userAvatar,
+    enum: userBg,
     default: "blue1",
+  },
+  avatar_img: {
+    type: String,
+    enum: userAvatar,
+    default: "Image01",
   },
   daily_goal: { type: Number, min: 50, default: 50, required: true },
   level: { type: Number, default: 1 },

@@ -1,7 +1,7 @@
 import { OAuth2Client } from "google-auth-library";
 import dotenv from "dotenv";
 import User from "../models/User.js";
-import { getGoogleUser, userAvatar } from "../shared/user.js";
+import { getGoogleUser, userAvatar, userBg } from "../shared/user.js";
 import { signObject } from "../shared/auth.js";
 
 dotenv.config();
@@ -62,15 +62,24 @@ const googleAuthCallback = async (req, res) => {
 
       if (!response) {
         //if guest id was not found, create new guest user
-        let avatar_bg = userAvatar[0];
+        let avatar_bg = userBg[0];
         try {
           const randIndex = Math.floor(Math.random() * 7);
-          avatar_bg = userAvatar[randIndex];
+          avatar_bg = userBg[randIndex];
+        } catch (error) {
+          console.log("Error assigning the user avatar", error.message);
+        }
+
+        let avatar_img = userBg[0];
+        try {
+          const randIndex = Math.floor(Math.random() * 10);
+          avatar_img = userAvatar[randIndex];
         } catch (error) {
           console.log("Error assigning the user avatar", error.message);
         }
         response = new User({
           avatar_bg,
+          avatar_img,
         });
       }
 

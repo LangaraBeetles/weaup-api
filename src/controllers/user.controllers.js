@@ -1,14 +1,23 @@
 import User from "../models/User.js";
 import { signObject } from "../shared/auth.js";
-import { userAvatar } from "../shared/user.js";
+import { userAvatar, userBg } from "../shared/user.js";
 
 //Create User
 const createUser = async (req, res) => {
   try {
-    let avatar_bg = userAvatar[0];
+    let avatar_bg = userBg[0];
+    let avatar_img = userAvatar[0];
+
     try {
       const randIndex = Math.floor(Math.random() * 7);
-      avatar_bg = userAvatar[randIndex];
+      avatar_bg = userBg[randIndex];
+    } catch (error) {
+      console.log("Error assigning the user bg", error.message);
+    }
+
+    try {
+      const randIndex = Math.floor(Math.random() * 10);
+      avatar_img = userAvatar[randIndex];
     } catch (error) {
       console.log("Error assigning the user avatar", error.message);
     }
@@ -20,6 +29,7 @@ const createUser = async (req, res) => {
       is_setup_complete: req.body.is_setup_complete,
       device_id: req.body.device_id,
       avatar_bg,
+      avatar_img,
     });
 
     const response = await newUser.save();
@@ -54,6 +64,9 @@ const updateUser = async (req, res) => {
     user.xp = req?.body?.xp ?? user?.xp;
     user.hp = req?.body?.hp ?? user?.hp;
     user.level = req?.body?.level ?? user?.level;
+
+    user.avatar_bg = req?.body?.avatar_bg ?? user?.avatar_bg;
+    user.avatar_img = req?.body?.avatar_img ?? user?.avatar_img;
 
     user.badges = req?.body?.badges ?? user?.badges;
 
