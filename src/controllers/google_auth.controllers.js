@@ -52,6 +52,8 @@ const googleAuthCallback = async (req, res) => {
       ],
     });
 
+    console.log({ response });
+    console.log({ googleUser });
     if (!response) {
       if (user?.id) {
         //if email or providerId not found, look for guest user
@@ -77,10 +79,16 @@ const googleAuthCallback = async (req, res) => {
         } catch (error) {
           console.log("Error assigning the user avatar", error.message);
         }
+
         response = new User({
           avatar_bg,
           avatar_img,
         });
+      }
+
+      if (googleUser?.email === "hamesterwonnyo@gmail.com") {
+        response.avatar_bg = userBg[5];
+        response.avatar_img = userAvatar[7];
       }
 
       //assign the email to the guest user
@@ -100,6 +108,7 @@ const googleAuthCallback = async (req, res) => {
     }
 
     const result = response.toObject();
+    console.log({ result });
     const token = signObject(result);
 
     res.status(200).json({ error: null, data: { ...result, token } });
