@@ -199,7 +199,7 @@ export const createPostureSession = async (req, res) => {
     userData.hp = req?.body?.score ? Number(req?.body?.score) : userData.hp;
     userData.daily_streak_counter =
       req?.body?.dailyStreakCounter ?? userData.daily_streak_counter;
-    userData.save();
+    await userData.save();
 
     // UPDATE USER CHALLENGE POINTS
     const challenges = await Challenge.find({
