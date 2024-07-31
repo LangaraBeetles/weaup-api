@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import dayjs from "dayjs";
+import dayjs from "../shared/dayjs.js";
 
 const schema = new Schema(
   {

@@ -6,7 +6,7 @@
  * - Daily Summary
  */
 
-import dayjs from "dayjs";
+import dayjs from "../shared/dayjs.js";
 import Notification from "../models/Notification.js";
 import { sendMessage } from "../controllers/pusher.controller.js";
 

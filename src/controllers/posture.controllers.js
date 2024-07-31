@@ -3,6 +3,7 @@ import Challenge from "../models/Challenge.js";
 import PostureRecord from "../models/PostureRecord.js";
 import PostureSession from "../models/PostureSession.js";
 import User from "../models/User.js";
+import dayjs from "../shared/dayjs.js";
 
 const createRecordObject = ({
   user_id,
@@ -95,24 +96,18 @@ export const getAllRecords = async (req, res) => {
 
     const good_posture = req?.query?.good_posture;
     const session_id = req?.query?.session_id;
-    const start_date = req?.query?.start_date;
-    const end_date = req?.query?.end_date;
+    const start_date = dayjs(req?.query?.start_date).startOf("day");
+    const end_date = dayjs(req?.query?.end_date).endOf("day");
 
     const data = await PostureRecord.find({
       ...(user_id !== undefined ? { user_id } : {}),
       ...(good_posture !== undefined ? { good_posture } : {}),
       ...(session_id !== undefined ? { session_id } : {}),
-      ...(start_date !== undefined
+      ...(start_date !== undefined && end_date !== undefined
         ? {
             recorded_at: {
-              $gte: new Date(start_date),
-            },
-          }
-        : {}),
-      ...(end_date !== undefined
-        ? {
-            recorded_at: {
-              $lte: new Date(end_date),
+              $gte: start_date.toDate(),
+              $lte: end_date.toDate(),
             },
           }
         : {}),
@@ -245,9 +240,19 @@ export const getAllSessions = async (req, res) => {
     // Optional filters
     const user_id = req?.query?.user_id ?? user._id;
     // prefer the user_id coming from the query params over the token (useful for testing), leave this value undefined to get the id from the token (recommended)
+    const start_date = dayjs(req?.query?.start_date).startOf("day");
+    const end_date = dayjs(req?.query?.end_date).endOf("day");
 
     const data = await PostureSession.find({
       ...(user_id !== undefined ? { user_id } : {}),
+      ...(start_date !== undefined && end_date !== undefined
+        ? {
+            started_at: {
+              $gte: start_date.toDate(),
+              $lte: end_date.toDate(),
+            },
+          }
+        : {}),
     }).exec();
 
     res.status(200).json({
