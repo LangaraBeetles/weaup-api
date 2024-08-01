@@ -1,5 +1,5 @@
 import { schedule } from "node-cron";
-import dayjs from "dayjs";
+import dayjs from "../shared/dayjs.js";
 import PostureRecord from "../models/PostureRecord.js";
 import groupBy from "lodash/groupBy.js";
 import PostureSession from "../models/PostureSession.js";

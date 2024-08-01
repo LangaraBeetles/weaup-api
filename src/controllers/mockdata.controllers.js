@@ -1,12 +1,11 @@
-import dayjs from "dayjs";
+import dayjs from "../shared/dayjs.js";
 import User from "../models/User.js";
 import Challenge from "../models/Challenge.js";
 import PostureRecord from "../models/PostureRecord.js";
 import { signObject } from "../shared/auth.js";
 import { saveJoinedChallengeNotification } from "../shared/notifications.js";
 
-import utc from "dayjs/plugin/utc.js";
-dayjs.extend(utc);
+import ActiveMonitoring from "../models/ActiveMonitoring.js";
 
 const knownUsers = [
   {
@@ -189,10 +188,11 @@ const createUsers = async (req, res) => {
             .set("minute", i)
             .toDate();
 
-          const easeInOutQuad = (t) =>
-            t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
-          const adjustedIndex = easeInOutQuad(dayIndex / daysDiff);
-          const good_posture = Math.random() < adjustedIndex;
+          // Calculate the exponential probability based on dayIndex
+          const adjustedIndex = dayIndex / daysDiff;
+          const probability = Math.pow(adjustedIndex, 2) * 0.3 + 0.7; // Exponential increase to ensure 80%+ towards the end
+
+          const good_posture = Math.random() < probability;
 
           dailyRecords.push({
             createdAt: createdAt,
@@ -210,8 +210,42 @@ const createUsers = async (req, res) => {
       return userRecords;
     });
     const records = postureRecords.flat().flat();
+    const good_percentage =
+      (records.filter(({ good_posture }) => !!good_posture).length /
+        records.length) *
+      100;
+    console.log(`Posture good percentage: ${good_percentage?.toFixed(0)}%`);
     console.log(`Posture records created: ${records.length}`);
     const result = await PostureRecord.insertMany(records);
+
+    try {
+      const activeMonitoring = users
+        .map((user) => {
+          const userRecords = new Array(daysDiff)
+            .fill({})
+            .map((_, dayIndex) => {
+              const createdAt = dayjs()
+                .subtract(daysDiff - (dayIndex + 1), "days")
+                .toDate();
+
+              return {
+                duration: Math.floor(Math.random() * 30 * 60) + 60,
+                user_id: user.id,
+                recorded_at: createdAt,
+              };
+            });
+
+          return userRecords;
+        })
+        .flat();
+
+      console.log(
+        `Active monitoring records created: ${activeMonitoring.length}`,
+      );
+      await ActiveMonitoring.insertMany(activeMonitoring);
+    } catch (error) {
+      console.error({ error });
+    }
 
     res.status(201).json({ error: null, data: result });
   } catch (error) {

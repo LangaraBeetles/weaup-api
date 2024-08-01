@@ -1,17 +1,8 @@
-import dayjs from "dayjs";
+import dayjs from "../shared/dayjs.js";
 import AuthData from "../models/Auth.js";
 import PostureRecord from "../models/PostureRecord.js";
 import PostureSession from "../models/PostureSession.js";
 import groupBy from "lodash/groupBy.js";
-import duration from "dayjs/plugin/duration.js";
-import relativeTime from "dayjs/plugin/relativeTime.js";
-import utc from "dayjs/plugin/utc.js";
-import timezone from "dayjs/plugin/timezone.js";
-
-dayjs.extend(duration);
-dayjs.extend(relativeTime);
-dayjs.extend(utc);
-dayjs.extend(timezone);
 
 const DATE_FORMAT = "YYYY-M-D";
 

@@ -1,5 +1,5 @@
 import { schedule } from "node-cron";
-import dayjs from "dayjs";
+import dayjs from "../shared/dayjs.js";
 import { saveChallengeFinishedNotification } from "../shared/notifications.js";
 import Challenge from "../models/Challenge.js";
 

@@ -1,4 +1,4 @@
-import dayjs from "dayjs";
+import dayjs from "../shared/dayjs.js";
 import DailySummary from "../models/DailySummary.js";
 import PostureRecord from "../models/PostureRecord.js";
 import PostureSession from "../models/PostureSession.js";
