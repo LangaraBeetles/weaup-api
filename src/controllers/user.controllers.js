@@ -68,6 +68,9 @@ const updateUser = async (req, res) => {
     user.avatar_bg = req?.body?.avatar_bg ?? user?.avatar_bg;
     user.avatar_img = req?.body?.avatar_img ?? user?.avatar_img;
 
+    user.daily_streak_counter =
+      req?.body?.daily_streak_counter ?? user?.daily_streak_counter;
+
     user.badges = req?.body?.badges ?? user?.badges;
 
     const response = await user.save();
