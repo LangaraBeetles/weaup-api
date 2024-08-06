@@ -13,7 +13,7 @@ router.use(mockdata);
 router.get("/test", (req, res) => {
   res.type("text/plain");
   res.status(200);
-  res.send("Working!");
+  res.send("Working with docker!");
 });
 
 export default router;
