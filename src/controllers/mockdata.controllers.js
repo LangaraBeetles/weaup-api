@@ -135,12 +135,15 @@ const createUsers = async (req, res) => {
 
     await User.bulkWrite(bulkUserOps);
 
+    const createdUsers = await User.find({
+      email: knownUsers.map((user) => user.email),
+    });
     /// Create challenge
 
     await Challenge.deleteMany({}).exec();
 
     const existingUser = await User.findOne({
-      email: "botha.wr@gmail.com",
+      // email: "botha.wr@gmail.com",
     }).exec();
 
     if (existingUser) {
@@ -152,7 +155,7 @@ const createUsers = async (req, res) => {
         description: "",
         start_at: dayjs().format(),
         end_at: dayjs().add(5, "days").format(),
-        duration: 5,
+        duration: 20,
         goal: 85,
         color: "#D3E7FF",
         members: [
@@ -160,6 +163,13 @@ const createUsers = async (req, res) => {
             user: existingUser._id, //added to link to users table
             user_id: existingUser._id, //workaround to filter by members
           },
+          ...createdUsers
+            .filter((user) => user.email !== "botha.wr@gmail.com")
+            .map((user) => ({
+              user: user._id,
+              user_id: user._id,
+              points: Math.floor(Math.random() * 500),
+            })),
         ],
       });
 
