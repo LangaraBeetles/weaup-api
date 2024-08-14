@@ -327,6 +327,7 @@ const joinChallenge = async (req, res) => {
             challengeId,
             challengeName: challenge.name,
             memberName: user.name,
+            memberAvatar: user.avatar_img,
           });
         }, 500);
 

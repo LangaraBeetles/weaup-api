@@ -11,6 +11,7 @@ class AuthData {
     this.xp = req.auth?.xp;
     this.hp = req.auth?.hp;
     this.device_id = req.auth?.device_id;
+    this.avatar_img = req.auth?.avatar_img;
   }
 }
 

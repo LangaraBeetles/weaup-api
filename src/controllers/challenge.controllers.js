@@ -238,6 +238,7 @@ export const joinChallenge = async (req, res) => {
           challengeId: challenge._id,
           challengeName: challenge.name,
           memberName: user.name,
+          memberAvatar: user?.avatar_img,
         });
       }
     }

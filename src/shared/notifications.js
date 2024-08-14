@@ -47,6 +47,7 @@ export const saveJoinedChallengeNotification = async ({
   userId,
   challengeId,
   challengeName,
+  memberAvatar,
   memberName,
 }) => {
   try {
@@ -64,6 +65,7 @@ export const saveJoinedChallengeNotification = async ({
 
     sendMessage(userId, {
       data: {
+        memberAvatar,
         memberName,
         challengeName,
         challengeId,
