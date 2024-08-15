@@ -142,26 +142,28 @@ const createUsers = async (req, res) => {
 
     await Challenge.deleteMany({}).exec();
 
-    const existingUser = await User.findOne({
-      // email: "botha.wr@gmail.com",
+    const reinsUser = await User.findOne({
+      email: "botha.wr@gmail.com",
     }).exec();
 
-    if (existingUser) {
+    if (reinsUser) {
+      //#region in progress
       const challengeUrl = `${process.env.CHALLENGE_URL}id=[challenge_id]&user=[user_id]`;
 
       const data = new Challenge({
-        creator_id: existingUser._id,
+        creator_id: reinsUser._id,
         name: "Reins Challenge",
         description: "",
-        start_at: dayjs().format(),
-        end_at: dayjs().add(5, "days").format(),
-        duration: 20,
+        start_at: dayjs().subtract(2, "days").format(),
+        end_at: dayjs().add(3, "days").format(),
+        duration: 5,
         goal: 85,
+        icon: "icon2",
         color: "#D3E7FF",
         members: [
           {
-            user: existingUser._id, //added to link to users table
-            user_id: existingUser._id, //workaround to filter by members
+            user: reinsUser._id, //added to link to users table
+            user_id: reinsUser._id, //workaround to filter by members
           },
           ...createdUsers
             .filter((user) => user.email !== "botha.wr@gmail.com")
@@ -177,9 +179,88 @@ const createUsers = async (req, res) => {
 
       data.url = url;
 
-      url = url.replace("[user_id]", existingUser._id);
+      url = url.replace("[user_id]", reinsUser._id);
 
       await data.save();
+      //#endregion in progress
+
+      //#region completed
+      const completed = new Challenge({
+        creator_id: reinsUser._id,
+        name: "Spring",
+        description: "",
+        start_at: dayjs().subtract(30, "days").format(),
+        end_at: dayjs().subtract(10, "days").format(),
+        duration: 20,
+        goal: 100,
+        color: "#FFF1CC",
+        icon: "icon1",
+        status: "completed",
+        members: [
+          {
+            user: reinsUser._id, //added to link to users table
+            user_id: reinsUser._id, //workaround to filter by members
+            points: 3335,
+          },
+          ...createdUsers
+            .filter((user) => user.email !== "botha.wr@gmail.com")
+            .map((user) => ({
+              user: user._id,
+              user_id: user._id,
+              points: 3333,
+            })),
+        ],
+      });
+
+      url = challengeUrl.replace("[challenge_id]", completed._id);
+
+      completed.url = url;
+
+      url = url.replace("[user_id]", reinsUser._id);
+
+      await completed.save();
+      //#endregion completed
+    }
+
+    const jialisUser = await User.findOne({
+      email: "lizcffk0901@gmail.com",
+    }).exec();
+
+    if (jialisUser) {
+      const challengeUrl = `${process.env.CHALLENGE_URL}id=[challenge_id]&user=[user_id]`;
+
+      const jchallenge = new Challenge({
+        creator_id: jialisUser._id,
+        name: "Jialis Challenge",
+        description: "Mind your posture!",
+        start_at: dayjs().subtract(5, "days").format(),
+        end_at: dayjs().add(5, "days").format(),
+        duration: 10,
+        goal: 90,
+        icon: "icon3",
+        color: "#F8CDD3",
+        members: [
+          {
+            user: jialisUser._id, //added to link to users table
+            user_id: jialisUser._id, //workaround to filter by members
+          },
+          ...createdUsers
+            .filter((user) => user.email !== "lizcffk0901@gmail.com")
+            .map((user) => ({
+              user: user._id,
+              user_id: user._id,
+              points: Math.floor(Math.random() * 700),
+            })),
+        ],
+      });
+
+      let url = challengeUrl.replace("[challenge_id]", jchallenge._id);
+
+      jchallenge.url = url;
+
+      url = url.replace("[user_id]", jialisUser._id);
+
+      await jchallenge.save();
     }
 
     ///
