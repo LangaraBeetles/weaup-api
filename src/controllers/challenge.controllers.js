@@ -1,6 +1,6 @@
 import AuthData from "../models/Auth.js";
 import Challenge from "../models/Challenge.js";
-import User from "../models/User.js";
+// import User from "../models/User.js";
 import { saveJoinedChallengeNotification } from "../shared/notifications.js";
 
 // Create challenge
@@ -229,18 +229,38 @@ export const joinChallenge = async (req, res) => {
 
       await challenge.save();
 
-      const newMember = await User.findById(user._id).exec();
+      // const newMember = await User.findById(user._id).exec();
 
-      if (newMember) {
-        // Save In-App Notification
-        saveJoinedChallengeNotification({
-          userId: challenge.creator_id,
-          challengeId: challenge._id,
-          challengeName: challenge.name,
-          memberName: user.name,
-          memberAvatar: user?.avatar_img,
-        });
-      }
+      // if (newMember) {
+      //   // Save In-App Notification
+      //   saveJoinedChallengeNotification({
+      //     userId: challenge.creator_id,
+      //     challengeId: challenge._id,
+      //     challengeName: challenge.name,
+      //     memberName: user.name,
+      //     memberAvatar: user?.avatar_img,
+      //   });
+      // }
+    }
+
+    try {
+      //Send a notification to all the users except for the new member
+      // regardless of whether the new member was previously added
+      Promise.all(
+        challenge.members
+          ?.filter((m) => m.user_id !== user._id)
+          .map((m) => {
+            return saveJoinedChallengeNotification({
+              userId: m.user_id,
+              challengeId: challenge._id,
+              challengeName: challenge.name,
+              memberName: user.name,
+              memberAvatar: user?.avatar_img,
+            });
+          }),
+      );
+    } catch (error) {
+      console.log({ error });
     }
 
     res.status(201).json({ data: challenge, error: null });
